@@ -7,11 +7,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.List;
+
 
 public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+
         Parent root = FXMLLoader.load(getClass().getResource("scene.fxml"));
         
         Scene scene = new Scene(root);
@@ -20,6 +23,12 @@ public class MainApp extends Application {
         stage.setTitle("JavaFX and Maven");
         stage.setScene(scene);
         stage.show();
+
+
+        State state = new State();
+        List<int[]> list=state.enabledOperators(5,5);
+        System.out.println(list.get(0)[0]+" "+list.get(0)[1]);
+        //System.out.println(list.get(1)[0]+" "+list.get(1)[1]);
     }
 
     /**

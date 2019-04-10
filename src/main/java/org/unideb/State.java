@@ -1,5 +1,8 @@
 package org.unideb;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class State {
 
 
@@ -47,7 +50,27 @@ public class State {
 
     }
 
+    public List<int[]> enabledOperators(int figurePosX, int figurePosY) {
+        List<int[]> list = new ArrayList<>();
+        for(int i=-1; i<2;){
+            for(int j=-1; j<2;) {
+                int stepToPosX=figurePosX+i;
+                int stepToPosY=figurePosY+j;
+                try {
+                    int stepToFig=stateOfGame[stepToPosX][stepToPosY];
+                    System.out.println("Debug");
+                    if(stepToFig==0) list.add(new int[] {figurePosX+i,figurePosY+j});
+                } catch (Exception e) {}
+                System.out.println("i:"+i+" j:"+j);
+                j=j+2;
+            }
+            int figure=stateOfGame[figurePosX][figurePosY];
+            if (figure==4) break;
+            i=i+2;
+        }
+        return list;
 
+    }
 
 
 

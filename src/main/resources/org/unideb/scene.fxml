@@ -4,9 +4,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="200" prefWidth="320" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="org.unideb.FXMLController">
+<AnchorPane id="AnchorPane" prefHeight="392.0" prefWidth="699.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.unideb.FXMLController">
     <children>
-        <Button layoutX="126" layoutY="90" onAction="#handleButtonAction" text="Click Me!" />
-        <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
+        <Button layoutX="572.0" layoutY="38.0" onAction="#handleButtonAction" text="Click Me!" />
+        <Label fx:id="label" layoutX="577.0" layoutY="91.0" minHeight="16" minWidth="69" prefHeight="26.0" prefWidth="69.0" />
     </children>
 </AnchorPane>
