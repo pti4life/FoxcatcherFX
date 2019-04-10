@@ -1,6 +1,7 @@
 package org.unideb;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class State {
@@ -18,8 +19,18 @@ public class State {
             {1,4,1,4,1,4,1,0}, };
 
 
+    public List<Integer> getStateOfGame() {
+        /*
+        List<Integer> list = new ArrayList<>();
+        for(int i = 0; i < stateOfGame.length; i++) {
 
+            list.addAll( Arrays.asList(stateOfGame[i]) );
+        }
+        return stateOfGame;
 
+         */
+        return null;
+    }
 
     public boolean doingStep(int figurePosX, int figurePosY, int stepToX, int stepToY) {
         int actualFigure=stateOfGame[figurePosX][figurePosY]; //mozgatni kívánt bábu

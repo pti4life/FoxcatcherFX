@@ -24,11 +24,6 @@ public class MainApp extends Application {
         stage.setScene(scene);
         stage.show();
 
-
-        State state = new State();
-        List<int[]> list=state.enabledOperators(5,5);
-        System.out.println(list.get(0)[0]+" "+list.get(0)[1]);
-        //System.out.println(list.get(1)[0]+" "+list.get(1)[1]);
     }
 
     /**

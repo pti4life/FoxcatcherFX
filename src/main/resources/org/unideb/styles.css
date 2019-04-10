@@ -1,3 +1,16 @@
 .button {
     -fx-font-weight: bold;
 }
+
+
+.blacks {
+    -fx-background-color: black;
+}
+
+.whites {
+    -fx-background-color: white;
+}
+
+.gridpane {
+    -fx-border-color: grey;
+}
