@@ -2,6 +2,7 @@ package org.unideb;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class State {
@@ -19,17 +20,21 @@ public class State {
             {1,4,1,4,1,4,1,0}, };
 
 
-    public List<Integer> getStateOfGame() {
-        /*
-        List<Integer> list = new ArrayList<>();
+    public LinkedList<String> getStateOfGame() {
+
+        LinkedList<String> list = new LinkedList<>();
         for(int i = 0; i < stateOfGame.length; i++) {
-
-            list.addAll( Arrays.asList(stateOfGame[i]) );
+            for (int j = 0; j < stateOfGame[i].length; j++) {
+                int figure=stateOfGame[i][j];
+                switch (figure) {
+                    case 1: list.add(""); break;
+                    case 0: list.add(""); break;
+                    case 3: list.add("3"); break;
+                    case 4: list.add("4"); break;
+                }
+            }
         }
-        return stateOfGame;
-
-         */
-        return null;
+        return list;
     }
 
     public boolean doingStep(int figurePosX, int figurePosY, int stepToX, int stepToY) {
