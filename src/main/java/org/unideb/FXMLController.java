@@ -31,6 +31,7 @@ public class FXMLController {
     @FXML
     private GridPane gPane;
 
+    int gamerNumber=0;
 
 
 
@@ -44,8 +45,8 @@ public class FXMLController {
             operators=state.enabledOperators(figureX,figureY);
             //System.out.println("üres->aktuális gomb:"+"btn"+figureX+figureY);
         } else {
-            System.out.println();
-            System.out.println("nem üres az operátor: "+operators);
+            //System.out.println();
+            //System.out.println("nem üres az operátor: "+operators);
             int stepToX=Character.getNumericValue(btn.getId().charAt(3));
             int stepToY=Character.getNumericValue(btn.getId().charAt(4));
             //System.out.println("Hova akarunk lépni"+"btn"+stepToX+stepToY);
@@ -57,11 +58,13 @@ public class FXMLController {
                 state.stepping(figureX,figureY,stepToX,stepToY);
                 updateState();
                 operators=new ArrayList<>();
+
             }
 
             operators=new ArrayList<>();
 
 
+            if(state.isGoal()) System.exit(1);
         }
 
 
@@ -104,14 +107,13 @@ public class FXMLController {
 
         state=new State();
 
-        System.out.println(gPane.getChildren().isEmpty()); //debug
+        //System.out.println(gPane.getChildren().isEmpty()); //debug
 
 
         gPane.getChildren().forEach(node -> buttons.add((Button)node)); //get buttons
 
 
-        System.out.println(buttons.size()); //debug
-
+        //System.out.println(buttons.size()); //debug
 
 
         updateState();

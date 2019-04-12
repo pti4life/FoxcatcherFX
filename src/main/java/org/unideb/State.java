@@ -20,6 +20,8 @@ public class State {
             {0,4,0,4,0,4,0,0}, };
 
 
+
+
     public LinkedList<String> getStateOfGame() {
 
         LinkedList<String> list = new LinkedList<>();
@@ -98,6 +100,24 @@ public class State {
     }
 
 
+    boolean isGoal() {
+        int PositionOf4X=7;
+        for (int i = 0; i < stateOfGame.length; i++) {
+            for (int j = 0; j <stateOfGame[i].length ; j++) {
+                if(stateOfGame[i][j]==4 && i<PositionOf4X) {
+                    PositionOf4X=i;
+                }
+                if(stateOfGame[i][j]==3) {
+                    return enabledOperators(i,j).isEmpty() || PositionOf4X<i;
+
+                }
+            }
+
+        }
+        return false;
+    }
+
+
 
     public void printMatrix() {
         for(int i=0; i<stateOfGame.length;i++) {
@@ -109,5 +129,8 @@ public class State {
     }
 
 }
+
+
+
 
 
