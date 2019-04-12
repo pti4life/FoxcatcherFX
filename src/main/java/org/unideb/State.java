@@ -9,15 +9,15 @@ public class State {
 
 
 
-    private int[][] stateOfGame ={
-            {0,1,3,1,0,1,0,1},
-            {1,0,1,0,1,0,1,0},
-            {0,1,0,1,0,1,0,1},
-            {1,0,1,0,1,0,1,0},
-            {0,1,0,1,0,1,4,1},
-            {1,0,1,0,1,4,1,0},
-            {0,1,0,1,0,1,0,1},
-            {1,4,1,4,1,4,1,0}, };
+    public int[][] stateOfGame ={
+            {0,0,3,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,4,0},
+            {0,0,0,0,0,4,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,4,0,4,0,4,0,0}, };
 
 
     public LinkedList<String> getStateOfGame() {
@@ -66,21 +66,30 @@ public class State {
 
     }
 
-    public List<int[]> enabledOperators(int figurePosX, int figurePosY) {
-        List<int[]> list = new ArrayList<>();
+    public void stepping(int whereX,int whereY,int toX,int ToY) {
+        this.stateOfGame[toX][ToY]=this.stateOfGame[whereX][whereY];
+        this.stateOfGame[whereX][whereY]=0;
+        //System.out.println("Lépés megtéve");
+    }
+
+    public List<String> enabledOperators(int figurePosX, int figurePosY) {
+        List<String> list = new ArrayList<>();
+        int figure=stateOfGame[figurePosX][figurePosY];
+        if(figure!=3 && figure!=4) return list;
         for(int i=-1; i<2;){
             for(int j=-1; j<2;) {
                 int stepToPosX=figurePosX+i;
                 int stepToPosY=figurePosY+j;
                 try {
                     int stepToFig=stateOfGame[stepToPosX][stepToPosY];
-                    System.out.println("Debug");
-                    if(stepToFig==0) list.add(new int[] {figurePosX+i,figurePosY+j});
+                    //System.out.println("Debug");
+                    String temp= (figurePosX + i) +String.valueOf(figurePosY+j);;
+                    if(stepToFig==0) list.add("btn"+temp);
                 } catch (Exception e) {}
-                System.out.println("i:"+i+" j:"+j);
+                //System.out.println("i:"+i+" j:"+j);
                 j=j+2;
             }
-            int figure=stateOfGame[figurePosX][figurePosY];
+
             if (figure==4) break;
             i=i+2;
         }
