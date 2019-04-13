@@ -20,6 +20,11 @@ public class State {
             {0,4,0,4,0,4,0,0}, };
 
 
+    private int actualFigurePosX;
+    private int actualFigurePosY;
+    private int roundCounter=0;
+    private ArrayList<Gamer> gamers=new ArrayList<>();
+
 
 
     public LinkedList<String> getStateOfGame() {
@@ -39,38 +44,34 @@ public class State {
         return list;
     }
 
-    public boolean doingStep(int figurePosX, int figurePosY, int stepToX, int stepToY) {
-        int actualFigure=stateOfGame[figurePosX][figurePosY]; //mozgatni kívánt bábu
-        int toStepFigure=stateOfGame[stepToX][stepToY]; //a kijelölt helyen lévő bábu
-        int stepDifferenceCol=Math.abs(figurePosY-stepToY); //a kijelölt hely
-        int stepDifferenceRow=stepToX-figurePosX;
+    public void addTwoGamer(Gamer gamer, Gamer gamer2) {
+            gamers.add(gamer);
+            gamers.add(gamer2);
 
-        if(toStepFigure!=0) {
-            System.out.println("debug1");
-            return false;
-
-        } else if (actualFigure==4 && stepDifferenceCol!=1 && stepDifferenceRow!=-1) {
-            stateOfGame[stepToX][stepToY]=4;
-            stateOfGame[figurePosX][figurePosY]=0;
-            System.out.println("debug2");
-            return false;
-
-        }  else if(actualFigure==3 && stepDifferenceCol!=1 && Math.abs(stepDifferenceRow)!=1) {
-            stateOfGame[stepToX][stepToY]=3;
-            stateOfGame[figurePosX][figurePosY]=0;
-            System.out.println("debug3");
-            return false;
-
-        }
-
-
-        return true;
 
     }
 
-    public void stepping(int whereX,int whereY,int toX,int ToY) {
-        this.stateOfGame[toX][ToY]=this.stateOfGame[whereX][whereY];
-        this.stateOfGame[whereX][whereY]=0;
+
+    public void stepping(int stepToX,int stepToY) {
+        /*
+        if(stateOfGame[actualFigurePosX][actualFigurePosY]==3) {
+            roundCounter++;
+        } else {
+            roundCounter--;
+        }
+        if(Math.abs(roundCounter)%2==0) {
+            roundCounter=1;
+            System.out.println("Nem te következel!");
+            return;
+        } else if(roundCounter<=-1) {
+            roundCounter=-1;
+            System.out.println("Nem te következel!");
+            return;
+        }
+         */
+
+        stateOfGame[stepToX][stepToY]=stateOfGame[actualFigurePosX][actualFigurePosY];
+        stateOfGame[actualFigurePosX][actualFigurePosY]=0;
         //System.out.println("Lépés megtéve");
     }
 
@@ -86,7 +87,11 @@ public class State {
                     int stepToFig=stateOfGame[stepToPosX][stepToPosY];
                     //System.out.println("Debug");
                     String temp= (figurePosX + i) +String.valueOf(figurePosY+j);;
-                    if(stepToFig==0) list.add("btn"+temp);
+                    if(stepToFig==0) {
+                        list.add("btn"+temp);
+                        actualFigurePosX=figurePosX;
+                        actualFigurePosY=figurePosY;
+                    }
                 } catch (Exception e) {}
                 //System.out.println("i:"+i+" j:"+j);
                 j=j+2;

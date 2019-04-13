@@ -9,10 +9,12 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,11 +25,24 @@ public class FXMLController {
     @FXML
     private Label label;
 
+    @FXML
+    private Pane fPane;
+
+    @FXML
+    private TextField foxname;
+
+    @FXML
+    private TextField dogname;
+
+    @FXML
+    private Button startbutt;
+
+
+
+
     List<Button>  buttons=new ArrayList<>();
     List<String> operators=new ArrayList<>();
     State state;
-    int figureX=0;
-    int figureY=0;
     @FXML
     private GridPane gPane;
 
@@ -40,11 +55,15 @@ public class FXMLController {
 
         Button btn=(Button)event.getSource();
         if (operators.isEmpty()) {
-            figureX=Character.getNumericValue(btn.getId().charAt(3));
-            figureY=Character.getNumericValue(btn.getId().charAt(4));
+            int figureX=Character.getNumericValue(btn.getId().charAt(3));
+            int figureY=Character.getNumericValue(btn.getId().charAt(4));
             operators=state.enabledOperators(figureX,figureY);
+            buttons.stream().filter(button -> operators.contains(button.getId()))
+                    .forEach(button -> button.setStyle("-fx-border-color: red; -fx-border-width: 3px;"));
             //System.out.println("üres->aktuális gomb:"+"btn"+figureX+figureY);
         } else {
+            buttons.stream().filter(button -> operators.contains(button.getId()))
+                    .forEach(button -> button.setStyle(null));
             //System.out.println();
             //System.out.println("nem üres az operátor: "+operators);
             int stepToX=Character.getNumericValue(btn.getId().charAt(3));
@@ -53,9 +72,10 @@ public class FXMLController {
             //System.out.println("honnan lépünk:"+"btn"+figureX+figureY);
             //System.out.println("A jelenlegi buttonünk");
             if(operators.contains(btn.getId())) {
+
                 //System.out.println("Az operátorok halmazában van az adott gomb");
                 //System.out.println("figureX:"+figureX+" figureY"+figureY+" steptoX"+stepToX+" steptoY"+stepToY);
-                state.stepping(figureX,figureY,stepToX,stepToY);
+                state.stepping(stepToX,stepToY);
                 updateState();
                 operators=new ArrayList<>();
 
@@ -70,34 +90,6 @@ public class FXMLController {
 
 
 
-        /*
-
-        System.out.println("megHÍVÓDOTT");
-        Button btn=(Button)event.getSource();
-        if(!operators.contains(btn)) {
-            //abból indulunk ki, hogy ha az aktuális buttont tRTlmazza az operátorunk
-            buttons.forEach(button -> button.setOnMouseClicked(null));
-            System.out.println("belépett");
-            figureX=Character.getNumericValue(btn.getId().charAt(3));
-            figureY=Character.getNumericValue(btn.getId().charAt(4));
-            operators=state.enabledOperators(figureX,figureY);
-
-        }
-        buttons.stream().filter(button -> operators.contains(button.getId())).forEach(button -> {
-                    button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent mouseEvent) {
-                            System.out.println("ide");
-                            Button btn2 =(Button)mouseEvent.getSource();
-                            int stepToX=Character.getNumericValue(btn2.getId().charAt(3));
-                            int stepToY=Character.getNumericValue(btn2.getId().charAt(4));
-                            state.stepping(figureX,figureY,stepToX,stepToY);
-                            updateState();
-                            operators=new ArrayList<>();
-
-                        }}); }
-                );
-         */
 
     }
 
@@ -115,8 +107,10 @@ public class FXMLController {
 
         //System.out.println(buttons.size()); //debug
 
-
+        initializeGamers();
         updateState();
+
+
 
         /*
         gPane.getChildren().forEach(item -> {
@@ -148,14 +142,9 @@ public class FXMLController {
 
 
 
-
-
-
-
-
-
-
     }
+
+
 
 
 
@@ -178,6 +167,34 @@ public class FXMLController {
         }
 
     }
+
+    private void initializeGamers() {
+        startbutt.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent actionEvent) {
+
+                String nameOfGamer1=foxname.getText().replaceAll("\\s+", "");
+                String nameOfGamer2=dogname.getText().replaceAll("\\s+", "");
+                System.out.println("DEBUG");
+                if(!nameOfGamer1.equals("") && !nameOfGamer2.equals("")) {
+                    state.addTwoGamer(new Gamer(nameOfGamer1),new Gamer(nameOfGamer2));
+                    fPane.setVisible(false);
+                    System.out.println("Belép");
+                } else {
+                    System.out.println("Rossz nevet adtál meg!");
+                }
+
+
+            }
+        });
+
+
+    }
+
 }
+
+
+
 
 
