@@ -11,10 +11,8 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="392.0" prefWidth="699.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.unideb.FXMLController">
+<AnchorPane id="basePane" fx:id="basePane" prefHeight="392.0" prefWidth="699.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.unideb.FXMLController">
     <children>
-        <Button id="btn" fx:id="btn" layoutX="572.0" layoutY="38.0" text="Click Me!" />
-        <Label fx:id="label" layoutX="577.0" layoutY="91.0" minHeight="16" minWidth="69" prefHeight="26.0" prefWidth="69.0" />
       <GridPane id="gPane" fx:id="gPane" layoutX="7.0" layoutY="8.0" prefHeight="361.0" prefWidth="389.0">
 
          <children>
@@ -116,7 +114,7 @@
             <RowConstraints />
          </rowConstraints>
       </GridPane>
-      <Pane id="fPane" fx:id="fPane" layoutY="-1.0" prefHeight="392.0" prefWidth="699.0" style="-fx-background-color: whitesmoke;">
+      <Pane id="startPane" fx:id="startPane" layoutY="-1.0" prefHeight="392.0" prefWidth="699.0" style="-fx-background-color: whitesmoke;">
          <children>
             <Text layoutX="49.0" layoutY="122.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adják meg a nevüket a játékosok!">
                <font>
@@ -143,5 +141,21 @@
             <TextField id="dogname" fx:id="dogname" layoutX="264.0" layoutY="182.0" />
          </children>
       </Pane>
+      <Pane id="restartPane" fx:id="restartPane" layoutX="219.0" layoutY="136.0" prefHeight="119.0" prefWidth="262.0" style="-fx-background-color: whitesmoke;" visible="false">
+         <children>
+            <Button id="restartButton" fx:id="restartButton" layoutX="43.0" layoutY="74.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="69.0" text="Új játék" />
+            <Button id="exitButton" fx:id="exitButton" layoutX="143.0" layoutY="74.0" mnemonicParsing="false" text="Kilépés" />
+            <Text layoutX="43.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Szeretne új kört a partnerével?" wrappingWidth="176.7294921875">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+         </children>
+      </Pane>
+        <Label id="foxinf" fx:id="foxinf" layoutX="424.0" layoutY="28.0" minHeight="16" minWidth="27.0" prefHeight="26.0" prefWidth="245.0">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <Label id="doginf" fx:id="doginf" layoutX="424.0" layoutY="62.0" minHeight="16" minWidth="27.0" prefHeight="26.0" prefWidth="245.0" />
     </children>
 </AnchorPane>
