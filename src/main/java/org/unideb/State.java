@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 public class State {
 
@@ -29,6 +33,7 @@ public class State {
 
     private LinkedList<Gamer> gamers=new LinkedList<>();
 
+    private static Logger logger = LoggerFactory.getLogger(State.class);
 
 
     public List<String> getStateOfGame() {
@@ -53,8 +58,9 @@ public class State {
     }
 
     public void addTwoGamer(Gamer gamer, Gamer gamer2) {
-            gamers.add(gamer);
-            gamers.add(gamer2);
+        gamers.add(gamer);
+        gamers.add(gamer2);
+        logger.info("Added two Gamer: Fox:{}, and Dog: {}",gamer.getName(),gamer2.getName());
 
 
     }
@@ -73,33 +79,16 @@ public class State {
 
 
     public void stepping(int stepToX,int stepToY) {
-        /*
-        if(stateOfGame[actualFigurePosX][actualFigurePosY]==3) {
-            roundCounter++;
-        } else {
-            roundCounter--;
-        }
-        if(Math.abs(roundCounter)%2==0) {
-            roundCounter=1;
-            System.out.println("Nem te következel!");
-            return;
-        } else if(roundCounter<=-1) {
-            roundCounter=-1;
-            System.out.println("Nem te következel!");
-            return;
-        }
-         */
-        System.out.println("actual figure:"+stateOfGame[actualFigurePosX][actualFigurePosY]+" actround figure:"+actualRound);
+        logger.debug("actual figure:{}, previous round figure:{}",stateOfGame[actualFigurePosX][actualFigurePosY],actualRound);
+
         if(stateOfGame[actualFigurePosX][actualFigurePosY]==actualRound) {
-            System.out.println("Nem te következel");
+            logger.warn("NEM TE KÖVETKEZEL");
             return;
         }
         actualRound=stateOfGame[actualFigurePosX][actualFigurePosY];
         stateOfGame[stepToX][stepToY]=stateOfGame[actualFigurePosX][actualFigurePosY];
         stateOfGame[actualFigurePosX][actualFigurePosY]=0;
-
-        System.out.println("nowactualroundifgure:"+actualRound);
-        //System.out.println("Lépés megtéve");
+        logger.info("Lépés megtéve");
     }
 
     public List<String> enabledOperators(int figurePosX, int figurePosY) {
@@ -111,17 +100,19 @@ public class State {
             for(int j=-1; j<2;) {
                 int stepToPosX=figurePosX+i;
                 int stepToPosY=figurePosY+j;
+                String temp= (stepToPosX) +String.valueOf(stepToPosY);
                 try {
                     int stepToFig=stateOfGame[stepToPosX][stepToPosY];
-                    //System.out.println("Debug");
-                    String temp= (figurePosX + i) +String.valueOf(figurePosY+j);;
+                    logger.info("enabledOperators, belépett a try ágba");
                     if(stepToFig==0) {
                         list.add("btn"+temp);
                         actualFigurePosX=figurePosX;
                         actualFigurePosY=figurePosY;
                     }
-                } catch (Exception e) {}
-                //System.out.println("i:"+i+" j:"+j);
+                } catch (Exception e) {
+                    logger.error("Exception a mátrix nem létező pozícójára hivatkozás miatt");
+                }
+                //logger.debug("for i:{}  for j:{}",i,j);
                 j=j+2;
             }
 
@@ -145,10 +136,12 @@ public class State {
                 if(stateOfGame[i][j]==3) {
                     int score;
                     if(enabledOperators(i,j).isEmpty()) {
+                        logger.info("Nincs alkalmazható operátor a rókára");
                         score = gamers.get(1).getScore()+1;
                         gamers.get(1).setScore(score);
                         return true;
                     } else if(PositionOf4X<i) {
+                        logger.info("A Róka háta mögött van kutya");
                         score = gamers.get(0).getScore()+1;
                         gamers.get(0).setScore(score);
                         return true;

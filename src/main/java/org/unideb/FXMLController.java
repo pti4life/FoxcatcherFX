@@ -88,7 +88,6 @@ public class FXMLController {
                 //System.out.println("figureX:"+figureX+" figureY"+figureY+" steptoX"+stepToX+" steptoY"+stepToY);
                 state.stepping(stepToX,stepToY);
                 updateState();
-                operators=new ArrayList<>();
 
             }
 
