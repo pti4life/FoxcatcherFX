@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -139,6 +140,7 @@
             <Button id="startbutt" fx:id="startbutt" layoutX="289.0" layoutY="231.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="78.0" text="Kezdés!" />
             <TextField id="foxname" fx:id="foxname" layoutX="261.0" layoutY="143.0" />
             <TextField id="dogname" fx:id="dogname" layoutX="264.0" layoutY="182.0" />
+            <Button id="rankingButt" fx:id="rankingButt" layoutX="476.0" layoutY="231.0" mnemonicParsing="false" text="Ranglista" />
          </children>
       </Pane>
       <Pane id="restartPane" fx:id="restartPane" layoutX="219.0" layoutY="136.0" prefHeight="119.0" prefWidth="262.0" style="-fx-background-color: whitesmoke;" visible="false">
@@ -157,5 +159,16 @@
             <Font size="14.0" />
          </font></Label>
       <Label id="doginf" fx:id="doginf" layoutX="424.0" layoutY="62.0" minHeight="16" minWidth="27.0" prefHeight="26.0" prefWidth="245.0" />
+      <Pane id="rankPane" fx:id="rankPane" prefHeight="392.0" prefWidth="699.0" visible="false">
+         <children>
+            <Text layoutX="45.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ranglista" wrappingWidth="186.296875">
+               <font>
+                  <Font size="32.0" />
+               </font>
+            </Text>
+            <TextArea id="rankList" fx:id="rankList" layoutX="22.0" layoutY="60.0" prefHeight="287.0" prefWidth="601.0" />
+            <Button id="rankExitButt" fx:id="rankExitButt" layoutX="525.0" layoutY="352.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="78.0" text="Kilép" />
+         </children>
+      </Pane>
     </children>
 </AnchorPane>

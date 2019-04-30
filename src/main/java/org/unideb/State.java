@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import db.GamerDao;
+import guice.PersistenceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,15 +16,20 @@ import org.slf4j.LoggerFactory;
 
 public class State {
 
+    public State() {
+        Injector injector = Guice.createInjector(new PersistenceModule("test"));
+        gmd = injector.getInstance(GamerDao.class);
+    }
 
 
+    private GamerDao gmd;
     private int[][] stateOfGame ={
             {0,0,3,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,4,0},
-            {0,0,0,0,0,4,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
             {0,4,0,4,0,4,0,0}, };
 
@@ -29,9 +39,12 @@ public class State {
     private int actualFigurePosY;
 
 
+    public int scoreOfFirstGamer=0;
+    public int scoreOfSecondGamer=0;
     private int actualRound;
 
-    private LinkedList<Gamer> gamers=new LinkedList<>();
+    private Gamer firstGamer;
+    private Gamer secondGamer;
 
     private static Logger logger = LoggerFactory.getLogger(State.class);
 
@@ -53,16 +66,50 @@ public class State {
         return list;
     }
 
-    public LinkedList<Gamer> getGamers() {
-        return gamers;
+    public Gamer getFirstGamer() {
+        return firstGamer;
+    }
+
+    public Gamer getSecondGamer() {
+        return secondGamer;
+    }
+
+    public int getScoreOfFirstGamer() {
+        return scoreOfFirstGamer;
+    }
+
+    public int getScoreOfSecondGamer() {
+        return scoreOfSecondGamer;
     }
 
     public void addTwoGamer(Gamer gamer, Gamer gamer2) {
-        gamers.add(gamer);
-        gamers.add(gamer2);
-        logger.info("Added two Gamer: Fox:{}, and Dog: {}",gamer.getName(),gamer2.getName());
+        List<Gamer> list=gmd.findAll();
+
+        for (Gamer g:list) {
+            if (g.getName().equals(gamer.getName()) ) {
+                logger.info("A NÉV ÉS A TÍPUS EGYEZIK"+gamer.getName());
+                firstGamer=g;
+            }
+            if (g.getName().equals(gamer2.getName()) ) {
+                logger.info("A NÉV ÉS A TÍPUS EGYEZIK"+gamer2.getName());
+                secondGamer=g;
+            }
+        }
+
+        if (firstGamer==null) {
+            logger.info("firstgamerNULL");
+            firstGamer=gamer;
+            gmd.persist(firstGamer);
+        }
+        if (secondGamer==null) {
+            logger.info("secondgamerNULL");
+            secondGamer=gamer2;
+            gmd.persist(secondGamer);
+        }
 
 
+        logger.info("Added two Gamer: Fox:{}, and Dog: {}",firstGamer.getName(),secondGamer.getName());
+        System.out.println(gmd.findAll().get(0).getName());
     }
 
     public void restartState() {
@@ -71,10 +118,17 @@ public class State {
                 {0,0,0,0,0,0,0,0},
                 {0,0,0,0,0,0,0,0},
                 {0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,4,0},
-                {0,0,0,0,0,4,0,0},
                 {0,0,0,0,0,0,0,0},
-                {0,4,0,4,0,4,0,0}, };
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,4,0,4,0,4,0,0},};
+
+        if (actualRound==3) {
+            actualRound=4;
+        } else {
+            actualRound=3;
+        }
+
     }
 
 
@@ -137,13 +191,19 @@ public class State {
                     int score;
                     if(enabledOperators(i,j).isEmpty()) {
                         logger.info("Nincs alkalmazható operátor a rókára");
-                        score = gamers.get(1).getScore()+1;
-                        gamers.get(1).setScore(score);
+                        score = firstGamer.getScore()+1;
+                        firstGamer.setScore(score);
+                        gmd.update(firstGamer);
+                        scoreOfFirstGamer++;
+                        logger.info("FIRSTGAMER PONTSZÁMA:"+firstGamer.getScore());
                         return true;
                     } else if(PositionOf4X<i) {
                         logger.info("A Róka háta mögött van kutya");
-                        score = gamers.get(0).getScore()+1;
-                        gamers.get(0).setScore(score);
+                        score = secondGamer.getScore()+1;
+                        secondGamer.setScore(score);
+                        gmd.update(secondGamer);
+                        scoreOfSecondGamer++;
+                        logger.info("SECONDGAMER PONTSZÁMA:"+secondGamer.getScore()+"score:  "+score);
                         return true;
                     };
 
@@ -152,6 +212,33 @@ public class State {
 
         }
         return false;
+    }
+
+    private void updateDB() {
+        Gamer gamer1=gmd.find(firstGamer.getId()).orElse(null);
+        Gamer gamer2=gmd.find(secondGamer.getId()).orElse(null);
+        int actualScore;
+        if (gamer1!=null) {
+            actualScore=firstGamer.getScore()+gamer1.getScore();
+            firstGamer.setScore(actualScore);
+        }
+
+        if (gamer2!=null) {
+            actualScore=secondGamer.getScore()+gamer2.getScore();
+            secondGamer.setScore(actualScore);
+        }
+
+        firstGamer.setScore(0);
+        secondGamer.setScore(0);
+    }
+
+    public void exitState() {
+        restartState();
+        scoreOfFirstGamer=0;
+        scoreOfSecondGamer=0;
+        firstGamer=null;
+        secondGamer=null;
+        actualRound=0;
     }
 
 

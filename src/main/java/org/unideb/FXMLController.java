@@ -1,5 +1,9 @@
 package org.unideb;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import db.GamerDao;
+import guice.PersistenceModule;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -46,6 +50,12 @@ public class FXMLController {
     private Button restartButton;
 
     @FXML
+    private Button rankingButt;
+
+    @FXML
+    private Button rankExitButt;
+
+    @FXML
     private Label foxinf;
 
     @FXML
@@ -60,7 +70,7 @@ public class FXMLController {
 
 
 
-
+    //A gridpane gombjaival dolgozik
     @FXML
     private void handleButtonAction(ActionEvent event) {
 
@@ -106,7 +116,7 @@ public class FXMLController {
     }
 
 
-    
+    //Inicíalizálja a játékot
     public void initialize() {
 
         state=new State();
@@ -115,6 +125,7 @@ public class FXMLController {
         gPane.getChildren().forEach(node -> gameButtons.add((Button)node)); //get buttons
         //System.out.println(buttons.size()); //debug
         initializeGamers();
+        System.out.println("LEFUT MIELŐTT ELINDULNA A JÁTÉK");
 
 
     }
@@ -127,10 +138,10 @@ public class FXMLController {
         for (int i = 0; i <64; i++) {
             gameButtons.get(i).setText(list.get(i));
         }
-        String fox=state.getGamers().get(0).getName()+"(Róka) pontszáma:"+state.getGamers().get(0).getScore();
+        String fox=state.getFirstGamer().getName()+" (Róka) pontszáma:"+state.getScoreOfFirstGamer();
         foxinf.setText(fox);
 
-        String dog=state.getGamers().get(1).getName()+"(Kutyák) pontszáma:"+state.getGamers().get(1).getScore();
+        String dog=state.getSecondGamer().getName()+" (Kutyák) pontszáma:"+state.getScoreOfSecondGamer();
         doginf.setText(dog);
 
 
@@ -147,7 +158,13 @@ public class FXMLController {
                 String nameOfGamer2=dogname.getText().replaceAll("\\s+", "");
                 System.out.println("DEBUG");
                 if(!nameOfGamer1.equals("") && !nameOfGamer2.equals("")) {
-                    state.addTwoGamer(new Gamer(nameOfGamer1),new Gamer(nameOfGamer2));
+                    Gamer g1=Gamer.builder()
+                            .name(nameOfGamer1)
+                            .build();
+                    Gamer g2=Gamer.builder()
+                            .name(nameOfGamer2)
+                            .build();
+                    state.addTwoGamer(g1,g2);
                     startPane.setVisible(false);
                     updateState();
                     System.out.println("Belép");
@@ -171,11 +188,8 @@ public class FXMLController {
         restartButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                gPane.setDisable(false);
-                gPane.setOpacity(1);
-                restartPane.setVisible(false);
-                state.restartState();
-                updateState();
+                restartToDos();
+
             }
         });
 
@@ -183,17 +197,31 @@ public class FXMLController {
         exitButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                state.restartState();
-                updateState();
-                gPane.setDisable(false);
-                gPane.setOpacity(1);
-                restartPane.setVisible(false);
-                foxname.setText(" ");
-                dogname.setText(" ");
-                startPane.setVisible(true);
+                restartToDos();
+                exitToDos();
+
 
             }
         });
+    }
+
+
+    private void restartToDos() {
+        state.restartState();
+        updateState();
+        gPane.setDisable(false);
+        gPane.setOpacity(1);
+        restartPane.setVisible(false);
+
+    }
+
+    private void exitToDos() {
+        state.exitState();
+        foxname.setText("");
+        dogname.setText("");
+        foxinf.setText("");
+        doginf.setText("");
+        startPane.setVisible(true);
     }
 
 
