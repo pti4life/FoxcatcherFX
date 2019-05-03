@@ -11,10 +11,7 @@ import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
@@ -26,7 +23,10 @@ import java.util.Objects;
 public class FXMLController {
 
     @FXML
-    private Pane startPane;
+    private Label foxinf;
+
+    @FXML
+    private Label doginf;
 
     @FXML
     private TextField foxname;
@@ -35,13 +35,20 @@ public class FXMLController {
     private TextField dogname;
 
     @FXML
-    private Button startbutt;
+    private Pane rankPane;
+
+    @FXML
+    private Pane startPane;
+
+    @FXML
+    private Pane restartPane;
 
     @FXML
     private GridPane gPane;
 
+
     @FXML
-    private Pane restartPane;
+    private Button startbutt;
 
     @FXML
     private Button exitButton;
@@ -56,10 +63,8 @@ public class FXMLController {
     private Button rankExitButt;
 
     @FXML
-    private Label foxinf;
+    private TextArea rankList;
 
-    @FXML
-    private Label doginf;
 
 
 
@@ -111,6 +116,30 @@ public class FXMLController {
 
 
 
+
+
+    }
+
+    @FXML
+    private void rankingButtonAction(ActionEvent event) {
+        rankPane.setVisible(true);
+        startPane.setVisible(false);
+        gPane.setVisible(false);
+        StringBuilder fieldContent = new StringBuilder("");
+        List<Gamer> list =state.getAllGamers();
+        for(int i=0; i<list.size();i++) {
+            rankList.appendText(i+1+". "+list.get(i).getName()+" pontja:"+list.get(i).getScore()+"\n");
+        }
+
+        rankExitButt.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                rankList.setText("");
+                rankPane.setVisible(false);
+                startPane.setVisible(true);
+                gPane.setVisible(true);
+            }
+        });
 
 
     }
@@ -178,6 +207,8 @@ public class FXMLController {
 
 
     }
+
+
 
     private void endgameView() {
         gPane.setDisable(true);

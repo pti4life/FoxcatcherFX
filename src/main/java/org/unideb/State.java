@@ -12,6 +12,7 @@ import guice.PersistenceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.TypedQuery;
 
 
 public class State {
@@ -82,34 +83,35 @@ public class State {
         return scoreOfSecondGamer;
     }
 
+    public List<Gamer> getAllGamers() {
+        return gmd.findAll();
+    }
+
     public void addTwoGamer(Gamer gamer, Gamer gamer2) {
-        List<Gamer> list=gmd.findAll();
 
-        for (Gamer g:list) {
-            if (g.getName().equals(gamer.getName()) ) {
-                logger.info("A NÉV ÉS A TÍPUS EGYEZIK"+gamer.getName());
-                firstGamer=g;
-            }
-            if (g.getName().equals(gamer2.getName()) ) {
-                logger.info("A NÉV ÉS A TÍPUS EGYEZIK"+gamer2.getName());
-                secondGamer=g;
-            }
-        }
 
-        if (firstGamer==null) {
-            logger.info("firstgamerNULL");
+
+        List<Gamer> firstGamerFromDB=gmd.findByName(gamer.getName());
+        List<Gamer> SecondGamerFromDB=gmd.findByName(gamer2.getName());
+        System.out.println(gmd.findByName(gamer.getName()));
+
+        if (!firstGamerFromDB.isEmpty()) {
+            firstGamer=firstGamerFromDB.get(0);
+        } else {
             firstGamer=gamer;
             gmd.persist(firstGamer);
         }
-        if (secondGamer==null) {
-            logger.info("secondgamerNULL");
+
+        if (!SecondGamerFromDB.isEmpty()) {
+            secondGamer=SecondGamerFromDB.get(0);
+        } else {
             secondGamer=gamer2;
             gmd.persist(secondGamer);
         }
 
 
+
         logger.info("Added two Gamer: Fox:{}, and Dog: {}",firstGamer.getName(),secondGamer.getName());
-        System.out.println(gmd.findAll().get(0).getName());
     }
 
     public void restartState() {

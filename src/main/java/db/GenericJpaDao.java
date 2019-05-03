@@ -40,7 +40,7 @@ public abstract class GenericJpaDao<T> {
 
     @Transactional
     public List<T> findAll() {
-        TypedQuery<T> typedQuery = entityManager.createQuery("FROM " + entityClass.getSimpleName(), entityClass);
+        TypedQuery<T> typedQuery = entityManager.createQuery("FROM" + entityClass.getSimpleName(), entityClass);
         return typedQuery.getResultList();
     }
 

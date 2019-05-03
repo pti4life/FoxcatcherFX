@@ -5,8 +5,8 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="all">
-            <AppenderRef ref="Console"/>
-        </Root>
+        <logger name="org.unideb.State" >
+            <level value="all"/>
+        </logger>
     </Loggers>
 </Configuration>
