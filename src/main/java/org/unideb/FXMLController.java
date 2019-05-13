@@ -1,38 +1,33 @@
 package org.unideb;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import db.GamerDao;
-import guice.PersistenceModule;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 public class FXMLController {
 
     @FXML
-    private Label foxinf;
+    private Label matchInfoFox;
 
     @FXML
-    private Label doginf;
+    private Label matchInfoDog;
 
     @FXML
-    private TextField foxname;
+    private TextField nameOfFox;
 
     @FXML
-    private TextField dogname;
+    private TextField nameOfDog;
 
     @FXML
     private Pane rankPane;
@@ -41,7 +36,7 @@ public class FXMLController {
     private Pane startPane;
 
     @FXML
-    private Pane restartPane;
+    private Pane endGameWindow;
 
     @FXML
     private GridPane gPane;
@@ -56,22 +51,29 @@ public class FXMLController {
     @FXML
     private Button restartButton;
 
-    @FXML
-    private Button rankingButt;
 
     @FXML
     private Button rankExitButt;
 
     @FXML
-    private TextArea rankList;
+    private TableView rankTable;
+
+    @FXML
+    private TableColumn rankName;
+
+    @FXML
+    private TableColumn rankScore;
 
 
 
 
 
-    List<Button>  gameButtons=new ArrayList<>();
-    List<String> operators=new ArrayList<>();
-    State state;
+    private Image whitePawn=new Image(getClass().getResourceAsStream("/images/white_pawn.png"));
+    private Image blackPawn=new Image(getClass().getResourceAsStream("/images/black_pawn.png"));
+
+    private List<Button>  gameButtons=new ArrayList<>();
+    private List<String> operators=new ArrayList<>();
+    private State state;
 
 
 
@@ -120,21 +122,22 @@ public class FXMLController {
 
     }
 
+
     @FXML
     private void rankingButtonAction(ActionEvent event) {
         rankPane.setVisible(true);
         startPane.setVisible(false);
         gPane.setVisible(false);
-        StringBuilder fieldContent = new StringBuilder("");
-        List<Gamer> list =state.getAllGamers();
-        for(int i=0; i<list.size();i++) {
-            rankList.appendText(i+1+". "+list.get(i).getName()+" pontja:"+list.get(i).getScore()+"\n");
-        }
+        ObservableList<Gamer> ObserlistOfGamers= FXCollections.observableList(state.getAllGamers());
+
+        rankName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        rankScore.setCellValueFactory(new PropertyValueFactory<>("score"));
+        rankTable.setItems(ObserlistOfGamers);
 
         rankExitButt.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                rankList.setText("");
+                rankTable.getItems().clear();
                 rankPane.setVisible(false);
                 startPane.setVisible(true);
                 gPane.setVisible(true);
@@ -165,13 +168,24 @@ public class FXMLController {
     private void updateState() {
         List<String> list=state.getStateOfGame();
         for (int i = 0; i <64; i++) {
-            gameButtons.get(i).setText(list.get(i));
+            String actualButtText=list.get(i);
+            System.out.println(actualButtText);
+            if (actualButtText.equals("4")) {
+                System.out.println("rápászít a 4esre a feketét");
+                gameButtons.get(i).setGraphic(new ImageView(blackPawn));
+            } else if (actualButtText.equals("3")) {
+                System.out.println("rápászít a 3esre a fehéret");
+                gameButtons.get(i).setGraphic(new ImageView(whitePawn));
+            } else {
+                gameButtons.get(i).setGraphic(null);
+            }
         }
+
         String fox=state.getFirstGamer().getName()+" (Róka) pontszáma:"+state.getScoreOfFirstGamer();
-        foxinf.setText(fox);
+        matchInfoFox.setText(fox);
 
         String dog=state.getSecondGamer().getName()+" (Kutyák) pontszáma:"+state.getScoreOfSecondGamer();
-        doginf.setText(dog);
+        matchInfoDog.setText(dog);
 
 
     }
@@ -182,9 +196,8 @@ public class FXMLController {
 
             @Override
             public void handle(ActionEvent actionEvent) {
-
-                String nameOfGamer1=foxname.getText().replaceAll("\\s+", "");
-                String nameOfGamer2=dogname.getText().replaceAll("\\s+", "");
+                String nameOfGamer1= nameOfFox.getText().replaceAll("\\s+", "");
+                String nameOfGamer2= nameOfDog.getText().replaceAll("\\s+", "");
                 System.out.println("DEBUG");
                 if(!nameOfGamer1.equals("") && !nameOfGamer2.equals("")) {
                     Gamer g1=Gamer.builder()
@@ -211,9 +224,10 @@ public class FXMLController {
 
 
     private void endgameView() {
+        updateState();
         gPane.setDisable(true);
         gPane.setOpacity(0.3);
-        restartPane.setVisible(true);
+        endGameWindow.setVisible(true);
         System.out.println("debug");
 
         restartButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -223,8 +237,6 @@ public class FXMLController {
 
             }
         });
-
-
         exitButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -242,16 +254,16 @@ public class FXMLController {
         updateState();
         gPane.setDisable(false);
         gPane.setOpacity(1);
-        restartPane.setVisible(false);
+        endGameWindow.setVisible(false);
 
     }
 
     private void exitToDos() {
         state.exitState();
-        foxname.setText("");
-        dogname.setText("");
-        foxinf.setText("");
-        doginf.setText("");
+        nameOfFox.setText("");
+        nameOfDog.setText("");
+        matchInfoFox.setText("");
+        matchInfoDog.setText("");
         startPane.setVisible(true);
     }
 

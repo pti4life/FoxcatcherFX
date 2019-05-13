@@ -12,7 +12,6 @@ import guice.PersistenceModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.TypedQuery;
 
 
 public class State {
@@ -57,10 +56,9 @@ public class State {
             for (int j = 0; j < stateOfGame[i].length; j++) {
                 int figure=stateOfGame[i][j];
                 switch (figure) {
-                    case 1: list.add(""); break;
-                    case 0: list.add(""); break;
                     case 3: list.add("3"); break;
                     case 4: list.add("4"); break;
+                    default: list.add("");
                 }
             }
         }
@@ -193,18 +191,18 @@ public class State {
                     int score;
                     if(enabledOperators(i,j).isEmpty()) {
                         logger.info("Nincs alkalmazható operátor a rókára");
-                        score = firstGamer.getScore()+1;
-                        firstGamer.setScore(score);
-                        gmd.update(firstGamer);
-                        scoreOfFirstGamer++;
-                        logger.info("FIRSTGAMER PONTSZÁMA:"+firstGamer.getScore());
-                        return true;
-                    } else if(PositionOf4X<i) {
-                        logger.info("A Róka háta mögött van kutya");
                         score = secondGamer.getScore()+1;
                         secondGamer.setScore(score);
                         gmd.update(secondGamer);
                         scoreOfSecondGamer++;
+                        logger.info("FIRSTGAMER PONTSZÁMA:"+firstGamer.getScore());
+                        return true;
+                    } else if(PositionOf4X<i) {
+                        logger.info("A Róka háta mögött van kutya");
+                        score = firstGamer.getScore()+1;
+                        firstGamer.setScore(score);
+                        gmd.update(firstGamer);
+                        scoreOfFirstGamer++;
                         logger.info("SECONDGAMER PONTSZÁMA:"+secondGamer.getScore()+"score:  "+score);
                         return true;
                     };
@@ -216,23 +214,6 @@ public class State {
         return false;
     }
 
-    private void updateDB() {
-        Gamer gamer1=gmd.find(firstGamer.getId()).orElse(null);
-        Gamer gamer2=gmd.find(secondGamer.getId()).orElse(null);
-        int actualScore;
-        if (gamer1!=null) {
-            actualScore=firstGamer.getScore()+gamer1.getScore();
-            firstGamer.setScore(actualScore);
-        }
-
-        if (gamer2!=null) {
-            actualScore=secondGamer.getScore()+gamer2.getScore();
-            secondGamer.setScore(actualScore);
-        }
-
-        firstGamer.setScore(0);
-        secondGamer.setScore(0);
-    }
 
     public void exitState() {
         restartState();

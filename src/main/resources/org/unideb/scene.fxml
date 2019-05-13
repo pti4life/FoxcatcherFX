@@ -2,7 +2,8 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -14,7 +15,7 @@
 
 <AnchorPane id="basePane" fx:id="basePane" prefHeight="392.0" prefWidth="699.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.unideb.FXMLController">
     <children>
-      <GridPane id="gPane" fx:id="gPane" layoutX="7.0" layoutY="8.0" prefHeight="361.0" prefWidth="389.0" visible="true">
+      <GridPane id="gPane" fx:id="gPane" layoutX="7.0" layoutY="15.0" prefHeight="385.0" prefWidth="428.0">
 
          <children>
             <Button id="btn00" fx:id="btn00" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="46.0" prefWidth="72.0" styleClass="whites" text="" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -91,8 +92,6 @@
              <Button id="btn76" fx:id="btn76" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="46.0" prefWidth="72.0" styleClass="blacks" text="" GridPane.columnIndex="6" GridPane.rowIndex="7" />
              <Button id="btn77" fx:id="btn77" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="46.0" prefWidth="72.0" styleClass="whites" text="" GridPane.columnIndex="7" GridPane.rowIndex="7" />
 
-
-
          </children>
          <columnConstraints>
             <ColumnConstraints />
@@ -115,50 +114,45 @@
             <RowConstraints />
          </rowConstraints>
       </GridPane>
-      <Pane id="startPane" fx:id="startPane" layoutY="-1.0" prefHeight="392.0" prefWidth="699.0" style="-fx-background-color: whitesmoke;">
+      <Pane id="startPane" fx:id="startPane" layoutY="-1.0" prefHeight="416.0" prefWidth="743.0" style="-fx-background-color: whitesmoke;">
          <children>
-            <Text layoutX="49.0" layoutY="122.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adják meg a nevüket a játékosok!">
+            <Text layoutX="102.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adják meg a nevüket a játékosok!">
                <font>
                   <Font size="23.0" />
                </font>
             </Text>
-            <Text layoutX="74.0" layoutY="162.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. játékos a rókával: ">
+            <Text layoutX="127.0" layoutY="206.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. játékos a rókával: ">
                <font>
                   <Font size="16.0" />
                </font>
             </Text>
-            <Text layoutX="49.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FoxCatcherFX">
+            <Text layoutX="102.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="FoxCatcherFX">
                <font>
                   <Font size="39.0" />
                </font>
             </Text>
-            <Text layoutX="74.0" layoutY="201.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. játékos a kutyákkal: ">
+            <Text layoutX="127.0" layoutY="245.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. játékos a kutyákkal: ">
                <font>
                   <Font size="16.0" />
                </font>
             </Text>
-            <Button id="startbutt" fx:id="startbutt" layoutX="289.0" layoutY="231.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="78.0" text="Kezdés!" />
-            <TextField id="foxname" fx:id="foxname" layoutX="261.0" layoutY="143.0" />
-            <TextField id="dogname" fx:id="dogname" layoutX="264.0" layoutY="182.0" />
-            <Button id="rankingButt" fx:id="rankingButt" layoutX="476.0" layoutY="231.0" mnemonicParsing="false" onAction="#rankingButtonAction" text="Ranglista" />
+            <Button id="startbutt" fx:id="startbutt" layoutX="334.0" layoutY="275.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="78.0" text="Kezdés!" />
+            <TextField id="foxname" fx:id="nameOfFox" layoutX="314.0" layoutY="187.0" />
+            <TextField id="dogname" fx:id="nameOfDog" layoutX="317.0" layoutY="226.0" />
+            <Button id="rankingButt" fx:id="rankingButt" layoutX="465.0" layoutY="275.0" mnemonicParsing="false" onAction="#rankingButtonAction" text="Ranglista" />
          </children>
       </Pane>
-      <Pane id="restartPane" fx:id="restartPane" layoutX="219.0" layoutY="136.0" prefHeight="119.0" prefWidth="262.0" style="-fx-background-color: whitesmoke;" visible="false">
+      <Pane id="restartPane" fx:id="endGameWindow" layoutX="212.0" layoutY="132.0" prefHeight="129.0" prefWidth="288.0" style="-fx-background-color: whitesmoke;" visible="false">
          <children>
-            <Button id="restartButton" fx:id="restartButton" layoutX="43.0" layoutY="74.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="69.0" text="Új játék" />
-            <Button id="exitButton" fx:id="exitButton" layoutX="143.0" layoutY="74.0" mnemonicParsing="false" text="Kilépés" />
-            <Text layoutX="43.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Szeretne új kört a partnerével?" wrappingWidth="176.7294921875">
+            <Button id="restartButton" fx:id="restartButton" layoutX="44.0" layoutY="74.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="69.0" text="Új játék" />
+            <Button id="exitButton" fx:id="exitButton" layoutX="144.0" layoutY="74.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="89.0" text="Főmenü" />
+            <Text layoutX="37.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Szeretne új kört a partnerével?" wrappingWidth="214.0">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
          </children>
       </Pane>
-        <Label id="foxinf" fx:id="foxinf" layoutX="424.0" layoutY="28.0" minHeight="16" minWidth="27.0" prefHeight="26.0" prefWidth="245.0">
-         <font>
-            <Font size="14.0" />
-         </font></Label>
-      <Label id="doginf" fx:id="doginf" layoutX="424.0" layoutY="62.0" minHeight="16" minWidth="27.0" prefHeight="26.0" prefWidth="245.0" />
       <Pane id="rankPane" fx:id="rankPane" prefHeight="392.0" prefWidth="699.0" visible="false">
          <children>
             <Text layoutX="45.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ranglista" wrappingWidth="186.296875">
@@ -166,9 +160,23 @@
                   <Font size="32.0" />
                </font>
             </Text>
-            <TextArea id="rankList" fx:id="rankList" editable="false" layoutX="22.0" layoutY="60.0" prefHeight="287.0" prefWidth="601.0" />
             <Button id="rankExitButt" fx:id="rankExitButt" layoutX="525.0" layoutY="352.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="78.0" text="Kilép" />
+            <TableView id="rankTable" fx:id="rankTable" layoutX="64.0" layoutY="68.0" prefHeight="268.0" prefWidth="194.0">
+              <columns>
+                <TableColumn fx:id="rankName" prefWidth="75.0" text="Nev" />
+                  <TableColumn fx:id="rankScore" prefWidth="75.0" text="Pont" />
+              </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
          </children>
       </Pane>
+        <Label id="foxinf" fx:id="matchInfoFox" layoutX="463.0" layoutY="42.0" minHeight="16" minWidth="27.0" prefHeight="26.0" prefWidth="245.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label id="doginf" fx:id="matchInfoDog" layoutX="463.0" layoutY="82.0" minHeight="16" minWidth="27.0" prefHeight="26.0" prefWidth="245.0" />
     </children>
 </AnchorPane>
