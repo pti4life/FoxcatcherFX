@@ -17,16 +17,30 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class State {
 
+
+    /**
+     * Beállítja a paraméterül kapott állapotot kezdőállapotnak ha megfelel a követelményeknek.
+     * @param stateOfGame A játék tábláját reprezentáló 2 dimenziós tömb.
+     * @throws IllegalArgumentException Nem elfogadható tábla esetén.
+     */
     public State(int[][] stateOfGame) {
+        if (!isValid(stateOfGame)) {
+            throw new IllegalArgumentException();
+        }
+
         this.stateOfGame=stateOfGame;
     }
 
 
     /**
+     *
+     */
+    private static Injector injector = Guice.createInjector(new PersistenceModule("test"));
+
+    /**
      * A perzisztencia műveletek végrehajtására
      * szolgálaó {@code GamerDao} osztály egy objektuma.
      */
-    private static Injector injector = Guice.createInjector(new PersistenceModule("test"));
     private static GamerDao gmd=injector.getInstance(GamerDao.class);
 
     /**
@@ -132,7 +146,7 @@ public class State {
     public void addTwoGamer(Gamer gamer, Gamer gamer2) {
 
         List<Gamer> firstGamerFromDB=gmd.findByName(gamer.getName());
-        List<Gamer> SecondGamerFromDB=gmd.findByName(gamer2.getName());
+        List<Gamer> secondGamerFromDB=gmd.findByName(gamer2.getName());
 
         if (!firstGamerFromDB.isEmpty()) {
             gamerWithFox =firstGamerFromDB.get(0);
@@ -141,8 +155,8 @@ public class State {
             gmd.persist(gamerWithFox);
         }
 
-        if (!SecondGamerFromDB.isEmpty()) {
-            gamerWithDog =SecondGamerFromDB.get(0);
+        if (!secondGamerFromDB.isEmpty()) {
+            gamerWithDog =secondGamerFromDB.get(0);
         } else {
             gamerWithDog =gamer2;
             gmd.persist(gamerWithDog);
@@ -198,7 +212,7 @@ public class State {
 
     /**
      * A felhasználótól bekért pozíción meghatározza, hogy milyen figura van, és ennek megfelelően
-     * kalkulálja a figura mely pozíciókra léphet.
+     * kalkulálja, hogy a figura mely pozíciókra léphet.
      * @param clickedPosX A felhasználó által kijelölt X koordináta.
      * @param clickedPosY A felhasználó által kijelölt Y koordináta.
      * @return Egy Stringeket tartalmazó listával tér vissza, melynek egy eleme
@@ -262,7 +276,7 @@ public class State {
         if(enabledOperators(positionXOfFox,positionYOfFox).isEmpty()) {
             score = gamerWithDog.getScore()+1;
             gamerWithDog.setScore(score);
-            gmd.update(gamerWithDog);
+            //gmd.update(gamerWithDog);
             scoreOfDogs++;
             log.info("Nincs alkalmazható operátor a rókára!, pozíciója: x:{} y:{}",positionXOfFox,positionYOfFox);
             log.info("gamerWithFox pontszáma:"+ gamerWithFox.getScore());
@@ -290,6 +304,25 @@ public class State {
         gamerWithFox =null;
         gamerWithDog =null;
         actualRound=0;
+    }
+
+    private boolean isValid(int[][] gameBoard) {
+        if (gameBoard==null || gameBoard.length!=8) {
+            return false;
+        }
+
+        for (int i=0; i<gameBoard.length;i++) {
+            if (gameBoard[i].length!=8) {
+                return false;
+            }
+
+            for (int j=0; j<gameBoard[i].length;j++) {
+                if (gameBoard[i][j]!=3 && gameBoard[i][j]!=4 && gameBoard[i][j]!=0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 

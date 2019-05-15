@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+/**
+ * Egy játékost reprezentál.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,14 +17,23 @@ import javax.persistence.*;
 @Entity
 public class Gamer {
 
+
     @GeneratedValue
     @Id
-    private int id;
+    private long id;
 
+
+    /**
+     * A játékos felhasználóneve.
+     */
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false)
+
+    /**
+     * A játékos pontszáma.
+     */
+    @Column(nullable =false)
     private int score=0;
 
 

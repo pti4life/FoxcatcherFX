@@ -15,7 +15,7 @@
 
 <AnchorPane id="basePane" fx:id="basePane" prefHeight="392.0" prefWidth="699.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.unideb.FXMLController">
     <children>
-      <GridPane id="gPane" fx:id="gPane" layoutX="7.0" layoutY="15.0" prefHeight="385.0" prefWidth="428.0">
+      <GridPane id="gPane" fx:id="gPane" layoutX="7.0" layoutY="15.0" prefHeight="385.0" prefWidth="428.0" visible="false">
 
          <children>
             <Button id="btn00" fx:id="btn00" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="46.0" prefWidth="72.0" styleClass="whites" text="" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -93,6 +93,26 @@
              <Button id="btn77" fx:id="btn77" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="46.0" prefWidth="72.0" styleClass="whites" text="" GridPane.columnIndex="7" GridPane.rowIndex="7" />
 
          </children>
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
       </GridPane>
       <Pane id="startPane" fx:id="startPane" layoutY="-1.0" prefHeight="416.0" prefWidth="743.0" style="-fx-background-color: whitesmoke;">
          <children>
@@ -158,5 +178,15 @@
          </font>
       </Label>
       <Label id="doginf" fx:id="matchInfoDog" layoutX="463.0" layoutY="82.0" minHeight="16" minWidth="27.0" prefHeight="26.0" prefWidth="245.0" />
+      <Pane id="restartPane" fx:id="endGameWindow1" layoutX="228.0" layoutY="143.0" prefHeight="129.0" prefWidth="288.0" style="-fx-background-color: whitesmoke;" visible="false">
+         <children>
+            <Button id="okButt" fx:id="okButt" layoutX="100.0" layoutY="73.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="89.0" text="Ok" />
+            <Text layoutX="38.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A másik játékos következik" textAlignment="CENTER" wrappingWidth="214.0">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+         </children>
+      </Pane>
     </children>
 </AnchorPane>

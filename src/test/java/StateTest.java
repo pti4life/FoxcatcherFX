@@ -1,13 +1,11 @@
-package org.unideb;
-
 import org.junit.jupiter.api.Test;
-
-import javax.validation.constraints.AssertFalse;
+import org.unideb.Gamer;
+import org.unideb.State;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-class StateTest {
+
+public class StateTest {
 
     private boolean containsForEnabledOperators(List<String> source, List<String> target) {
         for (String str:source) {
@@ -19,7 +17,7 @@ class StateTest {
     }
 
 
-    private boolean steppingTestHelper(int fromX, int fromY, int ToX, int ToY,State state,String figureFrom) {
+    private boolean steppingTestHelper(int fromX, int fromY, int ToX, int ToY, State state, String figureFrom) {
         String figureTo="";
         if(!state.enabledOperators(fromX,fromY).isEmpty()) {
             state.stepping(ToX,ToY);
@@ -186,6 +184,16 @@ class StateTest {
                 {0,0,0,0,0,0,0,0},
                 {0,0,0,0,0,0,0,0},
                 {0,0,0,0,0,0,0,0},}));
+
+        assertDoesNotThrow(()->new State(new int[][] {
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,3,0,0,0,0,0},
+                {0,4,0,0,0,0,0,4},
+                {4,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0}, }));
 
     }
 }

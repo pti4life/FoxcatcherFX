@@ -164,7 +164,6 @@ public class FXMLController {
         gPane.getChildren().forEach(node -> gameButtons.add((Button)node)); //get buttons
         //System.out.println(buttons.size()); //debug
         initializeGamers();
-        System.out.println("LEFUT MIELŐTT ELINDULNA A JÁTÉK");
 
 
     }
