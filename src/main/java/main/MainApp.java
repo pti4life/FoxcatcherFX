@@ -1,4 +1,4 @@
-package org.unideb;
+package main;
 
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -15,10 +15,10 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        Parent root = FXMLLoader.load(getClass().getResource("scene.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/org/unideb/scene.fxml"));
         
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/org/unideb/styles.css").toExternalForm());
         stage.setTitle("Fox catcher");
         stage.setResizable(false);
         stage.setScene(scene);

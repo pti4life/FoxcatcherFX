@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -151,7 +150,15 @@ public class FXMLController {
     //Inicíalizálja a játékot
     public void initialize() {
 
-        state=new State();
+        state=new State(new int[][] {
+                {0,0,3,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,4,0,4,0,4,0,0}, });
 
         //System.out.println(gPane.getChildren().isEmpty()); //debug
         gPane.getChildren().forEach(node -> gameButtons.add((Button)node)); //get buttons
@@ -169,22 +176,19 @@ public class FXMLController {
         List<String> list=state.getStateOfGame();
         for (int i = 0; i <64; i++) {
             String actualButtText=list.get(i);
-            System.out.println(actualButtText);
             if (actualButtText.equals("4")) {
-                System.out.println("rápászít a 4esre a feketét");
                 gameButtons.get(i).setGraphic(new ImageView(blackPawn));
             } else if (actualButtText.equals("3")) {
-                System.out.println("rápászít a 3esre a fehéret");
                 gameButtons.get(i).setGraphic(new ImageView(whitePawn));
             } else {
                 gameButtons.get(i).setGraphic(null);
             }
         }
 
-        String fox=state.getFirstGamer().getName()+" (Róka) pontszáma:"+state.getScoreOfFirstGamer();
+        String fox=state.getGamerWithFox().getName()+" (Róka) pontszáma:"+state.getScoreOfFox();
         matchInfoFox.setText(fox);
 
-        String dog=state.getSecondGamer().getName()+" (Kutyák) pontszáma:"+state.getScoreOfSecondGamer();
+        String dog=state.getGamerWithDog().getName()+" (Kutyák) pontszáma:"+state.getScoreOfDogs();
         matchInfoDog.setText(dog);
 
 

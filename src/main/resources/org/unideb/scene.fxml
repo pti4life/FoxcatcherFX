@@ -93,26 +93,6 @@
              <Button id="btn77" fx:id="btn77" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="46.0" prefWidth="72.0" styleClass="whites" text="" GridPane.columnIndex="7" GridPane.rowIndex="7" />
 
          </children>
-         <columnConstraints>
-            <ColumnConstraints />
-            <ColumnConstraints />
-            <ColumnConstraints />
-            <ColumnConstraints />
-            <ColumnConstraints />
-            <ColumnConstraints />
-            <ColumnConstraints />
-            <ColumnConstraints />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-         </rowConstraints>
       </GridPane>
       <Pane id="startPane" fx:id="startPane" layoutY="-1.0" prefHeight="416.0" prefWidth="743.0" style="-fx-background-color: whitesmoke;">
          <children>
