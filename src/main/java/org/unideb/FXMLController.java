@@ -278,6 +278,11 @@ public class FXMLController {
         gPane.setDisable(false);
         gPane.setOpacity(1);
         endGameWindow.setVisible(false);
+        if (state.getActualRound()==4) {
+            nextGamerLab.setText(gamerWithFox.getName());
+        } else {
+            nextGamerLab.setText(gamerWithDog.getName());
+        }
 
     }
 
