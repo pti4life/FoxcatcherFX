@@ -1,5 +1,6 @@
 package org.unideb;
 
+import db.PersistenceOperations;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,10 +11,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class FXMLController {
 
     @FXML
@@ -63,6 +66,8 @@ public class FXMLController {
     @FXML
     private TableColumn rankScore;
 
+    @FXML
+    private Label nextGamerLab;
 
 
 
@@ -73,10 +78,13 @@ public class FXMLController {
     private List<Button>  gameButtons=new ArrayList<>();
     private List<String> operators=new ArrayList<>();
     private State state;
+    private Gamer gamerWithFox;
+    private Gamer gamerWithDog;
+    private int actualScoreOfDog=0;
+    private int actualScoreOfFox=0;
 
+    private PersistenceOperations gameDao=new PersistenceOperations();
 
-
-    //A gridpane gombjaival dolgozik
     @FXML
     private void handleButtonAction(ActionEvent event) {
 
@@ -87,22 +95,21 @@ public class FXMLController {
             operators=state.enabledOperators(figureX,figureY);
             gameButtons.stream().filter(button -> operators.contains(button.getId()))
                     .forEach(button -> button.setStyle("-fx-border-color: red; -fx-border-width: 3px;"));
-            //System.out.println("üres->aktuális gomb:"+"btn"+figureX+figureY);
         } else {
             gameButtons.stream().filter(button -> operators.contains(button.getId()))
                     .forEach(button -> button.setStyle(null));
-            //System.out.println();
-            //System.out.println("nem üres az operátor: "+operators);
+
             int stepToX=Character.getNumericValue(btn.getId().charAt(3));
             int stepToY=Character.getNumericValue(btn.getId().charAt(4));
-            //System.out.println("Hova akarunk lépni"+"btn"+stepToX+stepToY);
-            //System.out.println("honnan lépünk:"+"btn"+figureX+figureY);
-            //System.out.println("A jelenlegi buttonünk");
-            if(operators.contains(btn.getId())) {
 
-                //System.out.println("Az operátorok halmazában van az adott gomb");
-                //System.out.println("figureX:"+figureX+" figureY"+figureY+" steptoX"+stepToX+" steptoY"+stepToY);
+            if(operators.contains(btn.getId())) {
                 state.stepping(stepToX,stepToY);
+                if (state.getActualRound()==3) {
+                    nextGamerLab.setText(gamerWithDog.getName());
+                } else if (state.getActualRound()==4) {
+                    nextGamerLab.setText(gamerWithFox.getName());
+                }
+
                 updateState();
 
             }
@@ -110,8 +117,20 @@ public class FXMLController {
             operators=new ArrayList<>();
 
 
-            if(state.isGoal()) {
-             endgameView();
+            if(state.isGoalDog()) {
+                int sumScoreDog=gamerWithDog.getScore()+1;
+                gamerWithDog.setScore(sumScoreDog);
+                actualScoreOfDog++;
+                gameDao.updateGamer(gamerWithDog);
+                updateState();
+                endgameView();
+            } else if (state.isGoalFox()) {
+                int sumScoreFox = gamerWithFox.getScore()+1;
+                gamerWithFox.setScore(sumScoreFox);
+                actualScoreOfFox++;
+                gameDao.updateGamer(gamerWithFox);
+                updateState();
+                endgameView();
             }
         }
 
@@ -127,7 +146,7 @@ public class FXMLController {
         rankPane.setVisible(true);
         startPane.setVisible(false);
         gPane.setVisible(false);
-        ObservableList<Gamer> ObserlistOfGamers= FXCollections.observableList(state.getAllGamers());
+        ObservableList<Gamer> ObserlistOfGamers= FXCollections.observableList(gameDao.getAllGamers());
 
         rankName.setCellValueFactory(new PropertyValueFactory<>("name"));
         rankScore.setCellValueFactory(new PropertyValueFactory<>("score"));
@@ -147,7 +166,9 @@ public class FXMLController {
     }
 
 
-    //Inicíalizálja a játékot
+
+
+
     public void initialize() {
 
         state=new State(new int[][] {
@@ -160,9 +181,8 @@ public class FXMLController {
                 {0,0,0,0,0,0,0,0},
                 {0,4,0,4,0,4,0,0}, });
 
-        //System.out.println(gPane.getChildren().isEmpty()); //debug
-        gPane.getChildren().forEach(node -> gameButtons.add((Button)node)); //get buttons
-        //System.out.println(buttons.size()); //debug
+
+        gPane.getChildren().forEach(node -> gameButtons.add((Button)node));
         initializeGamers();
 
 
@@ -172,7 +192,7 @@ public class FXMLController {
 
 
     private void updateState() {
-        List<String> list=state.getStateOfGame();
+        List<String> list=state.stateToListGetter();
         for (int i = 0; i <64; i++) {
             String actualButtText=list.get(i);
             if (actualButtText.equals("4")) {
@@ -184,10 +204,10 @@ public class FXMLController {
             }
         }
 
-        String fox=state.getGamerWithFox().getName()+" (Róka) pontszáma:"+state.getScoreOfFox();
+        String fox=gamerWithFox.getName()+" (Róka) pontszáma:"+actualScoreOfFox;
         matchInfoFox.setText(fox);
 
-        String dog=state.getGamerWithDog().getName()+" (Kutyák) pontszáma:"+state.getScoreOfDogs();
+        String dog=gamerWithDog.getName()+" (Kutyák) pontszáma:"+actualScoreOfDog;
         matchInfoDog.setText(dog);
 
 
@@ -201,7 +221,6 @@ public class FXMLController {
             public void handle(ActionEvent actionEvent) {
                 String nameOfGamer1= nameOfFox.getText().replaceAll("\\s+", "");
                 String nameOfGamer2= nameOfDog.getText().replaceAll("\\s+", "");
-                System.out.println("DEBUG");
                 if(!nameOfGamer1.equals("") && !nameOfGamer2.equals("")) {
                     Gamer g1=Gamer.builder()
                             .name(nameOfGamer1)
@@ -209,7 +228,7 @@ public class FXMLController {
                     Gamer g2=Gamer.builder()
                             .name(nameOfGamer2)
                             .build();
-                    state.addTwoGamer(g1,g2);
+                    addTwoGamer(g1,g2);
                     startPane.setVisible(false);
                     updateState();
                     System.out.println("Belép");
@@ -223,6 +242,7 @@ public class FXMLController {
 
 
     }
+
 
 
 
@@ -262,7 +282,21 @@ public class FXMLController {
     }
 
     private void exitToDos() {
-        state.exitState();
+        state=new State(new int[][]{
+                {0,0,3,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,4,0,4,0,4,0,0},});
+        gamerWithDog=null;
+        gamerWithFox=null;
+        actualScoreOfDog=0;
+        actualScoreOfFox=0;
+
+        nextGamerLab.setText("");
         nameOfFox.setText("");
         nameOfDog.setText("");
         matchInfoFox.setText("");
@@ -272,8 +306,40 @@ public class FXMLController {
 
 
 
+    /**
+     * A paraméterül kapott két {@code Gamer} osztály objektumát beállítja ha nem szerepelnek az adatbázisban,
+     * ha valamelyik játékos szerepel az adatbázisban (játszott valaha),akkor
+     * lekéri és azt állítja be.
+     * @param gamer A Rókával játszó játékost reprezentáló {@code Gamer} osztály objektuma.
+     * @param gamer2 A Kutyákkal játszó játékost reprezentáló {@code Gamer} osztály objektuma.
+     */
+    public void addTwoGamer(Gamer gamer, Gamer gamer2) {
+
+        List<Gamer> firstGamerFromDB=gameDao.findByName(gamer.getName());
+        List<Gamer> secondGamerFromDB=gameDao.findByName(gamer2.getName());
+
+
+        if (!firstGamerFromDB.isEmpty()) {
+            gamerWithFox =firstGamerFromDB.get(0);
+        } else {
+            gamerWithFox =gamer;
+            gameDao.persistGamer(gamerWithFox);
+        }
+
+        if (!secondGamerFromDB.isEmpty()) {
+            gamerWithDog =secondGamerFromDB.get(0);
+        } else {
+            gamerWithDog =gamer2;
+            gameDao.persistGamer(gamerWithDog);
+        }
+        log.info("Added two Gamer: Fox:{}, and Dog: {}", gamerWithFox.getName(), gamerWithDog.getName());
+
+    }
+
 
 }
+
+
 
 
 

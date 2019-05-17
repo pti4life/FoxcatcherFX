@@ -15,7 +15,17 @@
 
 <AnchorPane id="basePane" fx:id="basePane" prefHeight="392.0" prefWidth="699.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.unideb.FXMLController">
     <children>
-      <GridPane id="gPane" fx:id="gPane" layoutX="7.0" layoutY="15.0" prefHeight="385.0" prefWidth="428.0" visible="false">
+      <Text layoutX="490.0" layoutY="129.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A következő játékos:" wrappingWidth="95.7294921875">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Text>
+      <Label id="nextGamerLab" fx:id="nextGamerLab" layoutX="575.0" layoutY="113.0" prefHeight="37.0" prefWidth="107.0" textFill="#c93535">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Label>
+      <GridPane id="gPane" fx:id="gPane" layoutX="7.0" layoutY="15.0" prefHeight="385.0" prefWidth="428.0">
 
          <children>
             <Button id="btn00" fx:id="btn00" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="46.0" prefWidth="72.0" styleClass="whites" text="" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -113,6 +123,7 @@
             <RowConstraints />
             <RowConstraints />
          </rowConstraints>
+
       </GridPane>
       <Pane id="startPane" fx:id="startPane" layoutY="-1.0" prefHeight="416.0" prefWidth="743.0" style="-fx-background-color: whitesmoke;">
          <children>

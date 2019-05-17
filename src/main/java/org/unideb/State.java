@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import db.GamerDao;
-import guice.PersistenceModule;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -28,20 +24,11 @@ public class State {
             throw new IllegalArgumentException();
         }
 
-        this.stateOfGame=stateOfGame;
+        initBoard(stateOfGame);
     }
 
 
-    /**
-     *
-     */
-    private static Injector injector = Guice.createInjector(new PersistenceModule("test"));
 
-    /**
-     * A perzisztencia műveletek végrehajtására
-     * szolgálaó {@code GamerDao} osztály egy objektuma.
-     */
-    private static GamerDao gmd=injector.getInstance(GamerDao.class);
 
     /**
      * 8 soros és 8 oszlopos mátrix, ami a játékunk aktuális állapotát reprezentálja.
@@ -60,32 +47,11 @@ public class State {
     private int actualFigurePosX,actualFigurePosY;
 
 
-    /**
-     * A Rókával játszó játékos pontszáma.
-     */
-    private int scoreOfFox =0;
-
-    /**
-     * A Kutyákkal játszó játékos pontszáma.
-     */
-    private int scoreOfDogs =0;
-
 
     /**
      * Azon játékos figuráját tárolja amely utoljára lépett.
      */
     private int actualRound;
-
-
-    /**
-     * A Rókával játszó játékost reprezentáló {@code Gamer} osztály egy objektuma.
-     */
-    private Gamer gamerWithFox;
-
-    /**
-     * A Kutyákkal játszó játékost reprezentáló {@code Gamer} osztály egy objektuma.
-     */
-    private Gamer gamerWithDog;
 
 
 
@@ -95,7 +61,7 @@ public class State {
      * @return A mátrix elemeinek egy String reprezentációját tartalmazó lista.
      * A 0-val jelölt (üres) mezők egy üres String-ként jelennek meg.
      */
-    public List<String> getStateOfGame() {
+    public List<String> stateToListGetter() {
 
         LinkedList<String> list = new LinkedList<>();
         for(int i = 0; i < stateOfGame.length; i++) {
@@ -111,60 +77,9 @@ public class State {
         return list;
     }
 
-    public Gamer getGamerWithFox() {
-        return gamerWithFox;
+    public int getActualRound() {
+        return actualRound;
     }
-
-    public Gamer getGamerWithDog() {
-        return gamerWithDog;
-    }
-
-    public int getScoreOfFox() {
-        return scoreOfFox;
-    }
-
-    public int getScoreOfDogs() {
-        return scoreOfDogs;
-    }
-
-    /**
-     * Az adatbázisban lévő össze játékos lekérése.
-     * @return {@code Gamer} objektumok.
-     */
-    public List<Gamer> getAllGamers() {
-        return gmd.findAll();
-    }
-
-
-    /**
-     * A paraméterül kapott két {@code Gamer} osztály objektumát beállítja ha nem szerepelnek az adatbázisban,
-     * ha valamelyik játékos szerepel az adatbázisban (játszott valaha),akkor
-     * lekéri és azt állítja be.
-     * @param gamer A Rókával játszó játékost reprezentáló {@code Gamer} osztály objektuma.
-     * @param gamer2 A Kutyákkal játszó játékost reprezentáló {@code Gamer} osztály objektuma.
-     */
-    public void addTwoGamer(Gamer gamer, Gamer gamer2) {
-
-        List<Gamer> firstGamerFromDB=gmd.findByName(gamer.getName());
-        List<Gamer> secondGamerFromDB=gmd.findByName(gamer2.getName());
-
-        if (!firstGamerFromDB.isEmpty()) {
-            gamerWithFox =firstGamerFromDB.get(0);
-        } else {
-            gamerWithFox =gamer;
-            gmd.persist(gamerWithFox);
-        }
-
-        if (!secondGamerFromDB.isEmpty()) {
-            gamerWithDog =secondGamerFromDB.get(0);
-        } else {
-            gamerWithDog =gamer2;
-            gmd.persist(gamerWithDog);
-        }
-        log.info("Added two Gamer: Fox:{}, and Dog: {}", gamerWithFox.getName(), gamerWithDog.getName());
-
-    }
-
 
     /**
      * A játék állapotát visszaállítja a kezdőállapotra és
@@ -181,11 +96,6 @@ public class State {
                 {0,0,0,0,0,0,0,0},
                 {0,4,0,4,0,4,0,0},};
 
-        if (actualRound==3) {
-            actualRound=4;
-        } else {
-            actualRound=3;
-        }
 
     }
 
@@ -222,8 +132,9 @@ public class State {
     public List<String> enabledOperators(int clickedPosX, int clickedPosY) {
         List<String> list = new ArrayList<>();
         int figure=stateOfGame[clickedPosX][clickedPosY];
-        if(figure!=3 && figure!=4) return list; //Ha nem valamelyik figurával lépünk akkor nem tudunk lépni
-        //két forciklus a
+        if(figure!=3 && figure!=4) return list;
+        log.info("Clicked Position: X: {}  Y: {}",clickedPosX,clickedPosY);
+
         for(int i=-1; i<2;){
             for(int j=-1; j<2;) {
                 int stepToPosX=clickedPosX+i;
@@ -231,7 +142,6 @@ public class State {
                 String temp= (stepToPosX) +String.valueOf(stepToPosY);
                 try {
                     int stepToFig=stateOfGame[stepToPosX][stepToPosY];
-                    log.info("enabledOperators, belépett a try ágba");
                     if(stepToFig==0) {
                         list.add("btn"+temp);
                         actualFigurePosX=clickedPosX;
@@ -240,7 +150,6 @@ public class State {
                 } catch (Exception e) {
                     log.error("Exception a mátrix nem létező pozícójára hivatkozás miatt");
                 }
-                //logger.debug("for i:{}  for j:{}",i,j);
                 j=j+2;
             }
 
@@ -252,60 +161,53 @@ public class State {
     }
 
     /**
-     * Ellenőrzi, hogy az aktuális állapot célállapot-e.
+     * Ellenőrzi, hogy az aktuális állapot célállapot-e a Rókára nézve.
      * @return {@code true} ha az aktuális állapot célállapot, {@code false} ha az aktuális állapot nem célállapot.
      */
-    public boolean isGoal() {
+    public boolean isGoalFox() {
         int lowestPosXOfDogs=7;
         int positionXOfFox=0;
-        int positionYOfFox=0;
         for (int i = 0; i < stateOfGame.length; i++) {
             for (int j = 0; j <stateOfGame[i].length ; j++) {
                 if(stateOfGame[i][j]==4) {
-                    lowestPosXOfDogs=i; //a legkisebb sor ahol 4-es található
+                    lowestPosXOfDogs=i;
                 } else if(stateOfGame[i][j]==3) {
-                    positionXOfFox=i; //x pozíciója a  rókának
-                    positionYOfFox=j; //y pozíciója a rókának
+                    positionXOfFox=i;
                 }
-
             }
-
-
         }
-        int score;
-        if(enabledOperators(positionXOfFox,positionYOfFox).isEmpty()) {
-            score = gamerWithDog.getScore()+1;
-            gamerWithDog.setScore(score);
-            //gmd.update(gamerWithDog);
-            scoreOfDogs++;
-            log.info("Nincs alkalmazható operátor a rókára!, pozíciója: x:{} y:{}",positionXOfFox,positionYOfFox);
-            log.info("gamerWithFox pontszáma:"+ gamerWithFox.getScore());
-            return true;
-        } else if (positionXOfFox>lowestPosXOfDogs) {
-            score = gamerWithFox.getScore()+1;
-            gamerWithFox.setScore(score);
-            gmd.update(gamerWithFox);
-            scoreOfFox++;
-            log.info("A Róka háta mögött van kutya");
-            log.info("gamerWithDogs pontszáma:"+ gamerWithDog.getScore()+"score:  "+score);
+        if (positionXOfFox>lowestPosXOfDogs) {
+            log.info("A Róka a kutyák háta mögött van");
             return true;
         }
+
         return false;
     }
 
 
     /**
-     * A játékot és a hozzá tartozó minden komponenst kezdőállapotra állítja.
+     * Ellenőrzi, hogy az aktuális állapot célállapot-e a Kutyákra nézve.
+     * @return {@code true} ha az aktuális állapot célállapot, {@code false} ha az aktuális állapot nem célállapot.
      */
-    public void exitState() {
-        restartState();
-        scoreOfFox =0;
-        scoreOfDogs =0;
-        gamerWithFox =null;
-        gamerWithDog =null;
-        actualRound=0;
+    public boolean isGoalDog() {
+        for (int i = 0; i < stateOfGame.length; i++) {
+            for (int j = 0; j <stateOfGame[i].length ; j++) {
+                if(stateOfGame[i][j]==3) {
+                    log.info("Nincs alkalmazható operátor a rókára!, pozíciója: x:{} y:{}",i,j);
+                    return enabledOperators(i,j).isEmpty();
+                }
+            }
+        }
+        return false;
     }
 
+
+
+    /**
+     * A megadott játékostábla helyességét ellenörző metódus.
+     * @param gameBoard 2 dimenziós int tömb.
+     * @return {@Code True} ha a mátrix megfelel a követelményeknek, {@Code False} ha nem.
+     */
     private boolean isValid(int[][] gameBoard) {
         if (gameBoard==null || gameBoard.length!=8) {
             return false;
@@ -325,7 +227,14 @@ public class State {
         return true;
     }
 
-
+    private void initBoard(int[][] a) {
+        this.stateOfGame= new int[8][8];
+        for (int i = 0; i < 8; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                this.stateOfGame[i][j]=a[i][j];
+            }
+        }
+    }
 
 }
 

@@ -1,13 +1,7 @@
 package db;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.google.inject.persist.Transactional;
-import guice.PersistenceModule;
 import org.unideb.Gamer;
 
 

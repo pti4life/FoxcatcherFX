@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Egy játékost reprezentál.
@@ -35,6 +36,7 @@ public class Gamer {
      */
     @Column(nullable =false)
     private int score=0;
+    
 
 
 }

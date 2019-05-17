@@ -7,7 +7,7 @@ import org.unideb.Gamer;
 
 import java.util.List;
 
-public class PersistOperations {
+public class PersistenceOperations {
 
     private static Injector injector = Guice.createInjector(new PersistenceModule("test"));
 
@@ -20,11 +20,14 @@ public class PersistOperations {
 
 
 
-    public void PersistGamer(Gamer gamer, int actualScore) {
-        actualScore = gamer.getScore()+1;
-        gamer.setScore(actualScore);
+    public void updateGamer(Gamer gamer) {
         gmd.update(gamer);
     }
+
+    public void persistGamer(Gamer gamer) {
+        gmd.persist(gamer);
+    }
+
 
     /**
      * Az adatbázisban lévő össze játékos lekérése.
@@ -32,6 +35,10 @@ public class PersistOperations {
      */
     public List<Gamer> getAllGamers() {
         return gmd.findAll();
+    }
+
+    public List<Gamer> findByName(String name) {
+        return gmd.findByName(name);
     }
 
 

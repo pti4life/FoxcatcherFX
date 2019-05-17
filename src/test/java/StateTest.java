@@ -1,5 +1,4 @@
 import org.junit.jupiter.api.Test;
-import org.unideb.Gamer;
 import org.unideb.State;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +21,7 @@ public class StateTest {
         if(!state.enabledOperators(fromX,fromY).isEmpty()) {
             state.stepping(ToX,ToY);
         }
-        List<String> li=state.getStateOfGame();
+        List<String> li=state.stateToListGetter();
         return li.get((ToX+1)*8-(8-ToY)).equals(figureFrom) && li.get((fromX+1)*8-(8-fromY)).equals(figureTo) ;
 
     }
@@ -98,7 +97,7 @@ public class StateTest {
     }
 
     @Test
-    void testIsGoal() {
+    void testIsGoalFox() {
         State state=new State(new int[][] {
                 {0,0,3,0,0,0,0,0},
                 {0,0,0,0,0,0,0,0},
@@ -110,7 +109,7 @@ public class StateTest {
                 {0,4,0,4,0,4,0,0}, });
 
 
-        assertFalse(state.isGoal());
+        assertFalse(state.isGoalFox());
 
         state=new State(new int[][] {
                 {0,0,0,0,0,0,0,0},
@@ -123,7 +122,7 @@ public class StateTest {
                 {0,0,0,4,0,0,0,0}, });
 
 
-        assertFalse(state.isGoal());
+        assertFalse(state.isGoalFox());
 
         state=new State(new int[][] {
                 {3,0,0,0,0,0,0,0},
@@ -134,9 +133,8 @@ public class StateTest {
                 {0,0,0,0,0,0,0,0},
                 {4,0,0,0,0,0,0,0},
                 {0,0,0,4,0,0,0,0}, });
-        state.addTwoGamer(Gamer.builder().name("Gyuszi").score(0).build(),Gamer.builder().score(0).name("Pist").build());
 
-        assertTrue(state.isGoal());
+        assertFalse(state.isGoalFox());
 
         state=new State(new int[][] {
                 {0,0,0,0,0,0,0,0},
@@ -147,10 +145,62 @@ public class StateTest {
                 {0,0,0,0,0,4,0,0},
                 {4,0,0,0,0,0,0,0},
                 {0,0,0,3,0,0,0,0}, });
-        state.addTwoGamer(Gamer.builder().name("Gyuszi").score(0).build(),Gamer.builder().score(0).name("Pist").build());
 
-        assertTrue(state.isGoal());
+        assertTrue(state.isGoalFox());
 
+    }
+
+    @Test
+    void testIsGoalDog() {
+            State state=new State(new int[][] {
+                    {0,0,3,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,4,0,4,0,4,0,0}, });
+
+
+            assertFalse(state.isGoalDog());
+
+            state=new State(new int[][] {
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,4,0},
+                    {0,0,0,0,0,3,0,0},
+                    {4,0,0,0,0,0,0,0},
+                    {0,0,0,4,0,0,0,0}, });
+
+
+            assertFalse(state.isGoalDog());
+
+            state=new State(new int[][] {
+                    {3,0,0,0,0,0,0,0},
+                    {0,4,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {4,0,0,0,0,0,0,0},
+                    {0,0,0,4,0,0,0,0}, });
+
+            assertTrue(state.isGoalDog());
+
+            state=new State(new int[][] {
+                    {0,0,0,0,0,0,0,0},
+                    {0,4,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,4,0,0},
+                    {4,0,0,0,0,0,0,0},
+                    {0,0,0,3,0,0,0,0}, });
+
+            assertFalse(state.isGoalDog());
     }
 
     @Test
@@ -196,4 +246,5 @@ public class StateTest {
                 {0,0,0,0,0,0,0,0}, }));
 
     }
+
 }
