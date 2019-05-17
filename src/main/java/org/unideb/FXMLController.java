@@ -14,6 +14,7 @@ import javafx.scene.layout.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
@@ -192,7 +193,7 @@ public class FXMLController {
 
 
     private void updateState() {
-        List<String> list=state.stateToListGetter();
+        List<String> list=convertStatetoList(state.getStateOfGame());
         for (int i = 0; i <64; i++) {
             String actualButtText=list.get(i);
             if (actualButtText.equals("4")) {
@@ -210,6 +211,27 @@ public class FXMLController {
         String dog=gamerWithDog.getName()+" (Kutyák) pontszáma:"+actualScoreOfDog;
         matchInfoDog.setText(dog);
 
+
+    }
+
+    /**
+     * Az játék állapotának {@code stateOfGame} egy lista reprezentációja.
+     * @return A mátrix elemeinek egy String reprezentációját tartalmazó lista.
+     * A 0-val jelölt (üres) mezők egy üres String-ként jelennek meg.
+     */
+    public List<String> convertStatetoList(int[][] stateOfGame) {
+        LinkedList<String> list = new LinkedList<>();
+        for(int i = 0; i < stateOfGame.length; i++) {
+            for (int j = 0; j < stateOfGame[i].length; j++) {
+                int figure=stateOfGame[i][j];
+                switch (figure) {
+                    case 3: list.add("3"); break;
+                    case 4: list.add("4"); break;
+                    default: list.add("");
+                }
+            }
+        }
+        return list;
 
     }
 
@@ -273,7 +295,15 @@ public class FXMLController {
 
 
     private void restartToDos() {
-        state.restartState();
+        state=new State(new int[][] {
+                {0,0,3,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0},
+                {0,4,0,4,0,4,0,0}, },state.getActualRound());
         updateState();
         gPane.setDisable(false);
         gPane.setOpacity(1);

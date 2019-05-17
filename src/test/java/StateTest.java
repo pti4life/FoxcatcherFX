@@ -16,13 +16,14 @@ public class StateTest {
     }
 
 
-    private boolean steppingTestHelper(int fromX, int fromY, int ToX, int ToY, State state, String figureFrom) {
-        String figureTo="";
+    private boolean steppingTestHelper(int fromX, int fromY, int ToX, int ToY, State state, int figureFrom) {
+        int figureTo=0;
         if(!state.enabledOperators(fromX,fromY).isEmpty()) {
             state.stepping(ToX,ToY);
         }
-        List<String> li=state.stateToListGetter();
-        return li.get((ToX+1)*8-(8-ToY)).equals(figureFrom) && li.get((fromX+1)*8-(8-fromY)).equals(figureTo) ;
+        int[][] board=state.getStateOfGame();
+
+        return board[ToX][ToY]==figureFrom && board[fromX][fromY]==figureTo;
 
     }
 
@@ -39,17 +40,17 @@ public class StateTest {
                 {0,0,0,0,0,0,0,0},
                 {0,4,0,4,0,4,0,0}, });
 
-        assertTrue(steppingTestHelper(7,1,6,0,state,"4"));
-        assertFalse(steppingTestHelper(6,0,5,1,state,"4"));
+        assertTrue(steppingTestHelper(7,1,6,0,state,4));
+        assertFalse(steppingTestHelper(6,0,5,1,state,4));
 
-        assertTrue(steppingTestHelper(0,2,1,3,state,"3"));
-        assertFalse(steppingTestHelper(1,3,2,2,state,"3"));
+        assertTrue(steppingTestHelper(0,2,1,3,state,3));
+        assertFalse(steppingTestHelper(1,3,2,2,state,3));
 
-        assertTrue(steppingTestHelper(6,0,5,1,state,"4"));
-        assertTrue(steppingTestHelper(1,3,0,5,state,"3"));
+        assertTrue(steppingTestHelper(6,0,5,1,state,4));
+        assertTrue(steppingTestHelper(1,3,0,5,state,3));
 
-        assertTrue(steppingTestHelper(7,3,6,4,state,"4"));
-        assertTrue(steppingTestHelper(0,5,1,3,state,"3"));
+        assertTrue(steppingTestHelper(7,3,6,4,state,4));
+        assertTrue(steppingTestHelper(0,5,1,3,state,3));
     }
 
     @Test

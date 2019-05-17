@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.List;
 
 /**
- * Egy játékost reprezentál.
+ * Egy játékost reprezentáló osztály.
  */
 @Data
 @NoArgsConstructor

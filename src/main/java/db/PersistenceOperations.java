@@ -37,6 +37,12 @@ public class PersistenceOperations {
         return gmd.findAll();
     }
 
+
+    /**
+     * A paraméterként kapott nevű játékost adja vissza.
+     * @param name String típusú objektum, a játékos neve akit szeretnénk megkeresni.
+     * @return {@code Game} objektum.
+     */
     public List<Gamer> findByName(String name) {
         return gmd.findByName(name);
     }

@@ -1,7 +1,7 @@
 package org.unideb;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +24,26 @@ public class State {
             throw new IllegalArgumentException();
         }
 
+        initBoard(stateOfGame);
+    }
+
+    /**
+     * Beállítja a paraméterül kapott állapotot kezdőállapotnak ha megfelel a követelményeknek.
+     * @param stateOfGame A játék tábláját reprezentáló 2 dimenziós tömb.
+     * @throws IllegalArgumentException Nem elfogadható tábla esetén.
+     */
+
+    /**
+     * Beállítja a paraméterül kapott állapotot kezdőállapotnak ha megfelel a követelményeknek, és azt is, hogy ki lépett utoljára.
+     * @param stateOfGame A játék tábláját reprezentáló 2 dimenziós tömb.
+     * @param actualRound Az utoljára lépett játékos.
+     * @throws IllegalArgumentException Nem elfogadható tábla esetén.
+     */
+    public State(int[][] stateOfGame,int actualRound) {
+        if (!isValid(stateOfGame)) {
+            throw new IllegalArgumentException();
+        }
+        this.actualRound=actualRound;
         initBoard(stateOfGame);
     }
 
@@ -53,53 +73,55 @@ public class State {
      */
     private int actualRound;
 
-
-
-
-    /**
-     * Az játék állapotának {@code stateOfGame} egy lista reprezentációja.
-     * @return A mátrix elemeinek egy String reprezentációját tartalmazó lista.
-     * A 0-val jelölt (üres) mezők egy üres String-ként jelennek meg.
-     */
-    public List<String> stateToListGetter() {
-
-        LinkedList<String> list = new LinkedList<>();
-        for(int i = 0; i < stateOfGame.length; i++) {
-            for (int j = 0; j < stateOfGame[i].length; j++) {
-                int figure=stateOfGame[i][j];
-                switch (figure) {
-                    case 3: list.add("3"); break;
-                    case 4: list.add("4"); break;
-                    default: list.add("");
-                }
-            }
-        }
-        return list;
-    }
-
     public int getActualRound() {
         return actualRound;
     }
 
-    /**
-     * A játék állapotát visszaállítja a kezdőállapotra és
-     * biztosítja, hogy a következő körben a másik játékos kezdjen.
-     */
-    public void restartState() {
-        stateOfGame=new int[][]{
-                {0,0,3,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0},
-                {0,0,0,0,0,0,0,0},
-                {0,4,0,4,0,4,0,0},};
-
-
-
+    public int[][] getStateOfGame() {
+        return stateOfGame;
     }
 
+
+
+
+
+    /**
+     * A felhasználótól bekért pozíción meghatározza, hogy milyen figura van, és ennek megfelelően
+     * kalkulálja, hogy a figura mely pozíciókra léphet.
+     * @param clickedPosX A felhasználó által kijelölt X koordináta.
+     * @param clickedPosY A felhasználó által kijelölt Y koordináta.
+     * @return Egy Stringeket tartalmazó listával tér vissza, melynek egy eleme
+     * a felhasználó által kijelölt pozíción lévő figura, mely pozíciókra léphet, formája: "btnXY"
+     * ahol XY az állapottérmátrix egy pozíciója.
+     */
+    public List<String> enabledOperators(int clickedPosX, int clickedPosY) {
+        List<String> list = new ArrayList<>();
+        int figure=stateOfGame[clickedPosX][clickedPosY];
+        if(figure!=3 && figure!=4) return list;
+        log.info("Clicked Position: X: {}  Y: {} and figure: {}",clickedPosX,clickedPosY,figure);
+
+        for(int i=-1; i<2;){
+            for(int j=-1; j<2;) {
+                int stepToPosX=clickedPosX+i;
+                int stepToPosY=clickedPosY+j;
+                String temp= (stepToPosX) +String.valueOf(stepToPosY);
+                try {
+                    int stepToFig=stateOfGame[stepToPosX][stepToPosY];
+                    if(stepToFig==0) {
+                        list.add("btn"+temp);
+                        actualFigurePosX=clickedPosX;
+                        actualFigurePosY=clickedPosY;
+                    }
+                } catch (Exception e) {}
+                j=j+2;
+            }
+
+            if (figure==4) break;
+            i=i+2;
+        }
+        return list;
+
+    }
 
     /**
      * Az állapotteret egy másik állapotba viszi, azaz egy lépést hajt végre
@@ -120,46 +142,6 @@ public class State {
         log.info("Lépés megtéve");
     }
 
-
-    /**
-     * A felhasználótól bekért pozíción meghatározza, hogy milyen figura van, és ennek megfelelően
-     * kalkulálja, hogy a figura mely pozíciókra léphet.
-     * @param clickedPosX A felhasználó által kijelölt X koordináta.
-     * @param clickedPosY A felhasználó által kijelölt Y koordináta.
-     * @return Egy Stringeket tartalmazó listával tér vissza, melynek egy eleme
-     * a felhasználó által kijelölt pozíción lévő figura, mely pozíciókra léphet, formája: "btnXY"
-     * ahol XY az állapottérmátrix egy pozíciója.
-     */
-    public List<String> enabledOperators(int clickedPosX, int clickedPosY) {
-        List<String> list = new ArrayList<>();
-        int figure=stateOfGame[clickedPosX][clickedPosY];
-        if(figure!=3 && figure!=4) return list;
-        log.info("Clicked Position: X: {}  Y: {}",clickedPosX,clickedPosY);
-
-        for(int i=-1; i<2;){
-            for(int j=-1; j<2;) {
-                int stepToPosX=clickedPosX+i;
-                int stepToPosY=clickedPosY+j;
-                String temp= (stepToPosX) +String.valueOf(stepToPosY);
-                try {
-                    int stepToFig=stateOfGame[stepToPosX][stepToPosY];
-                    if(stepToFig==0) {
-                        list.add("btn"+temp);
-                        actualFigurePosX=clickedPosX;
-                        actualFigurePosY=clickedPosY;
-                    }
-                } catch (Exception e) {
-                    log.error("Exception a mátrix nem létező pozícójára hivatkozás miatt");
-                }
-                j=j+2;
-            }
-
-            if (figure==4) break;
-            i=i+2;
-        }
-        return list;
-
-    }
 
     /**
      * Ellenőrzi, hogy az aktuális állapot célállapot-e a Rókára nézve.
@@ -185,7 +167,6 @@ public class State {
         return false;
     }
 
-
     /**
      * Ellenőrzi, hogy az aktuális állapot célállapot-e a Kutyákra nézve.
      * @return {@code true} ha az aktuális állapot célállapot, {@code false} ha az aktuális állapot nem célállapot.
@@ -194,8 +175,10 @@ public class State {
         for (int i = 0; i < stateOfGame.length; i++) {
             for (int j = 0; j <stateOfGame[i].length ; j++) {
                 if(stateOfGame[i][j]==3) {
-                    log.info("Nincs alkalmazható operátor a rókára!, pozíciója: x:{} y:{}",i,j);
-                    return enabledOperators(i,j).isEmpty();
+                    if (enabledOperators(i,j).isEmpty()) {
+                        log.info("Nincs alkalmazható operátor a Rókára, ezért a Kutyák nyertek!");
+                        return true;
+                    }
                 }
             }
         }

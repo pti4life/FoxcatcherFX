@@ -164,7 +164,7 @@
             </Text>
          </children>
       </Pane>
-      <Pane id="rankPane" fx:id="rankPane" prefHeight="392.0" prefWidth="699.0" visible="false">
+      <Pane id="rankPane" fx:id="rankPane" prefHeight="392.0" prefWidth="699.0" style="-fx-background-color: whitesmoke;" visible="false">
          <children>
             <Text layoutX="45.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ranglista" wrappingWidth="186.296875">
                <font>
