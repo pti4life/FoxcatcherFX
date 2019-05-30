@@ -84,7 +84,7 @@ public class FXMLController {
     private int actualScoreOfDog=0;
     private int actualScoreOfFox=0;
 
-    private PersistenceOperations gameDao=new PersistenceOperations();
+    private PersistenceOperations persistenceOperations =new PersistenceOperations();
 
     @FXML
     private void handleButtonAction(ActionEvent event) {
@@ -117,19 +117,21 @@ public class FXMLController {
 
             operators=new ArrayList<>();
 
-
             if(state.isGoalDog()) {
                 int sumScoreDog=gamerWithDog.getScore()+1;
                 gamerWithDog.setScore(sumScoreDog);
                 actualScoreOfDog++;
-                gameDao.updateGamer(gamerWithDog);
+                persistenceOperations.updateGamer(gamerWithDog);
+                saveGameStation();
                 updateState();
                 endgameView();
             } else if (state.isGoalFox()) {
+
                 int sumScoreFox = gamerWithFox.getScore()+1;
                 gamerWithFox.setScore(sumScoreFox);
                 actualScoreOfFox++;
-                gameDao.updateGamer(gamerWithFox);
+                persistenceOperations.updateGamer(gamerWithFox);
+                saveGameStation();
                 updateState();
                 endgameView();
             }
@@ -147,7 +149,7 @@ public class FXMLController {
         rankPane.setVisible(true);
         startPane.setVisible(false);
         gPane.setVisible(false);
-        ObservableList<Gamer> ObserlistOfGamers= FXCollections.observableList(gameDao.getAllGamers());
+        ObservableList<Gamer> ObserlistOfGamers= FXCollections.observableList(persistenceOperations.getAllGamers());
 
         rankName.setCellValueFactory(new PropertyValueFactory<>("name"));
         rankScore.setCellValueFactory(new PropertyValueFactory<>("score"));
@@ -350,25 +352,47 @@ public class FXMLController {
      */
     public void addTwoGamer(Gamer gamer, Gamer gamer2) {
 
-        List<Gamer> firstGamerFromDB=gameDao.findByName(gamer.getName());
-        List<Gamer> secondGamerFromDB=gameDao.findByName(gamer2.getName());
+        List<Gamer> firstGamerFromDB= persistenceOperations.findByName(gamer.getName());
+        List<Gamer> secondGamerFromDB= persistenceOperations.findByName(gamer2.getName());
 
 
         if (!firstGamerFromDB.isEmpty()) {
             gamerWithFox =firstGamerFromDB.get(0);
         } else {
             gamerWithFox =gamer;
-            gameDao.persistGamer(gamerWithFox);
+            persistenceOperations.persistGamer(gamerWithFox);
         }
 
         if (!secondGamerFromDB.isEmpty()) {
             gamerWithDog =secondGamerFromDB.get(0);
         } else {
             gamerWithDog =gamer2;
-            gameDao.persistGamer(gamerWithDog);
+            persistenceOperations.persistGamer(gamerWithDog);
         }
         log.info("Added two Gamer: Fox:{}, and Dog: {}", gamerWithFox.getName(), gamerWithDog.getName());
 
+    }
+
+    private String stateStringRepr() {
+        int[][] stateOfGame=state.getStateOfGame();
+        String staterep="";
+        for (int i=0; i<stateOfGame.length;i++) {
+            for (int j=0; j<stateOfGame[i].length;j++) {
+                staterep=staterep+stateOfGame[i][j];
+            }
+        }
+        return staterep;
+    }
+
+    private void saveGameStation() {
+        GameMembers gm = GameMembers.builder()
+                .gamerWithFox(gamerWithFox)
+                .scoreOfFox(actualScoreOfFox)
+                .gamerWithDog(gamerWithDog)
+                .scoreOfDog(actualScoreOfDog)
+                .state(stateStringRepr())
+                .build();
+        persistenceOperations.persistGameStation(gm);
     }
 
 
